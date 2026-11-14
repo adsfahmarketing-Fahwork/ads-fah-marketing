@@ -609,3 +609,8 @@ img.brand__mark { width: 50px; height: auto; }
   .package__price b { font-size: 44px; }
   .package__actions .btn { flex: 1 1 100%; }
 }
+
+/* ---------- Manual send (free static hosting) ---------- */
+.manual-send { display: grid; gap: 10px; margin: 18px 0 14px; }
+.manual-send__text { text-align: left; white-space: pre-wrap; font: 14px/1.6 var(--font-body); background: var(--ivory); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; color: var(--text); max-height: 200px; overflow: auto; margin: 0; }
+.manual-send__hint { color: #1E7B4D; font-size: 14px; margin: 10px 0 0; }

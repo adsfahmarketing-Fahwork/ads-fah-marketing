@@ -94,8 +94,14 @@
     $$('.reveal', grid).forEach(observe);
   }
 
-  fetch('/api/courses').then((r) => (r.ok ? r.json() : [])).catch(() => []).then((d) => { courses = d; renderCourses(); });
-  fetch('/api/reviews').then((r) => (r.ok ? r.json() : [])).catch(() => []).then(renderReviews);
+  // ใช้ API เมื่อมีเซิร์ฟเวอร์ — ถ้าเปิดบนโฮสต์ฟรีแบบไฟล์อย่างเดียว ใช้ไฟล์ใน data/ แทน
+  const isJson = (r) => r.ok && (r.headers.get('content-type') || '').includes('json');
+  const loadData = (api, file) => fetch(api)
+    .then((r) => (isJson(r) ? r.json() : Promise.reject()))
+    .catch(() => fetch(file).then((r) => (r.ok ? r.json() : [])))
+    .catch(() => []);
+  loadData('/api/courses', 'data/courses.json').then((d) => { courses = d; renderCourses(); });
+  loadData('/api/reviews', 'data/reviews.json').then(renderReviews);
 
   // ---------- Tabs / CTA routing ----------
   const form = $('#leadForm');
@@ -147,8 +153,14 @@
 
     const btn = $('#submitBtn');
     btn.disabled = true; const label = btn.textContent; btn.textContent = 'กำลังส่ง...';
+    let res;
     try {
-      const res = await fetch('/api/leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      res = await fetch('/api/leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    } catch { res = null; }
+    // ไม่มีเซิร์ฟเวอร์ (โฮสต์ฟรี) → ให้ลูกค้าส่งข้อมูลทางอีเมล / LINE แทน
+    const hasApi = res && (res.headers.get('content-type') || '').includes('json');
+    if (!hasApi) { showManualSend(data); return; }
+    try {
       const out = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(out.error || 'ส่งไม่สำเร็จ');
       showSuccess(data);
@@ -168,6 +180,44 @@
         <p>ทีมงาน ADS FAH MARKETING จะติดต่อกลับที่เบอร์ ${esc(data.phone)} ภายใน 24 ชั่วโมง<br>ถ้าต้องการคำตอบเร็วขึ้น ทัก LINE ได้เลยค่ะ</p>
         <a class="btn btn--gold" href="${LINE_URL}" target="_blank" rel="noopener">แชท LINE: adsfahmarketing</a>
       </div>`;
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function showManualSend(data) {
+    const course = courses.find((c) => c.id === data.courseId);
+    const lines = [
+      data.kind === 'consult' ? 'ขอปรึกษาการตลาด / บริการยิงแอด' : 'สมัครเรียน',
+      `ชื่อ: ${data.name}`,
+      `เบอร์โทร: ${data.phone}`,
+      data.lineId && `LINE ID: ${data.lineId}`,
+      data.email && `อีเมล: ${data.email}`,
+      course && `คอร์ส: ${course.type} — ${course.name}`,
+      data.format && `รูปแบบการเรียน: ${data.format}`,
+      data.preferredDate && `วันที่สะดวก: ${data.preferredDate}`,
+      data.business && `ธุรกิจ/เพจ: ${data.business}`,
+      data.budget && `งบโฆษณาต่อเดือน: ${data.budget}`,
+      data.message && `รายละเอียด: ${data.message}`
+    ].filter(Boolean).join('\n');
+    const subject = `[เว็บไซต์] ${data.kind === 'consult' ? 'ขอปรึกษาการตลาด' : 'สมัครเรียน'} — ${data.name}`;
+    const mailto = `mailto:adsfahmarketing@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`;
+    const card = $('.form-card');
+    card.innerHTML = `
+      <div class="success">
+        <div class="success__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg></div>
+        <h3>อีกขั้นเดียว คุณ${esc(data.name)}</h3>
+        <p>กดปุ่มด้านล่างเพื่อส่งข้อมูลถึงทีมงาน ADS FAH MARKETING</p>
+        <div class="manual-send">
+          <a class="btn btn--gold btn--block" href="${mailto}">ส่งทางอีเมล</a>
+          <button type="button" class="btn btn--navy btn--block" id="copyLine">คัดลอกข้อมูล แล้วเปิด LINE</button>
+          <a class="btn btn--ghost btn--block" href="tel:0618266465">โทร 061-826-6465</a>
+        </div>
+        <pre class="manual-send__text">${esc(lines)}</pre>
+        <p class="manual-send__hint" id="copyHint" hidden>คัดลอกแล้ว — วางข้อความในแชท LINE ได้เลยค่ะ</p>
+      </div>`;
+    $('#copyLine').addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(lines); $('#copyHint').hidden = false; } catch { /* ignore */ }
+      window.open(LINE_URL, '_blank', 'noopener');
+    });
     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 })();
