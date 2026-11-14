@@ -1,0 +1,9 @@
+{
+  "name": "ads-fah-marketing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "เว็บไซต์ ADS FAH MARKETING พร้อมระบบรับสมัครเรียนและหลังบ้าน",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}

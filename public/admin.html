@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/images/logo-mark.png">
+  <title>หลังบ้าน · ADS FAH MARKETING</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --navy: #0B1E45; --navy-9: #07142F; --gold: #C8A15A; --gold-50: #FBF6EA; --gold-200: #EAD7AA; --ivory: #FAF8F3; --ink: #0E1530; --muted: #69728A; --line: #E7E3D9; --ok: #1E7B4D; --err: #C0392B; }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; font: 15px/1.6 "IBM Plex Sans Thai", system-ui, sans-serif; color: var(--ink); background: var(--ivory); }
+    h1, h2, h3 { margin: 0; font-family: "Noto Serif Thai", serif; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    .btn { border: 1px solid transparent; background: var(--navy); color: #fff; padding: 9px 18px; border-radius: 999px; cursor: pointer; font-weight: 600; white-space: nowrap; }
+    .btn:hover { filter: brightness(1.15); }
+    .btn--gold { background: var(--gold); color: var(--navy-9); }
+    .btn--ghost { background: transparent; color: var(--navy); border-color: var(--line); }
+    .btn--danger { background: transparent; color: var(--err); border-color: #EBC4BE; }
+    .btn--sm { padding: 5px 12px; font-size: 13.5px; }
+    input, select, textarea { width: 100%; padding: 9px 12px; border: 1px solid #DCD7CB; border-radius: 10px; background: #fff; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(200, 161, 90, .2); }
+    label { display: grid; gap: 4px; font-size: 13px; font-weight: 600; color: var(--muted); }
+
+    /* login */
+    .login { min-height: 100vh; display: grid; place-items: center; background: radial-gradient(800px 500px at 80% 0, #1D4190, transparent 60%), var(--navy-9); padding: 16px; }
+    .login__card { width: min(400px, 100%); background: #fff; border-radius: 22px; padding: 36px 30px; display: grid; gap: 16px; }
+    .login__card h1 { font-size: 24px; }
+    .login__card p { margin: 0; color: var(--muted); font-size: 14px; }
+    .err { color: var(--err); font-size: 14px; min-height: 1.4em; margin: 0; }
+
+    /* app */
+    .top { background: var(--navy-9); color: #fff; }
+    .top__in { max-width: 1240px; margin: 0 auto; padding: 14px 16px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .top h1 { font-size: 18px; flex: 1; }
+    .top h1 small { color: var(--gold-200); font-family: "IBM Plex Sans Thai"; font-weight: 400; font-size: 13px; margin-left: 8px; }
+    .top a { color: var(--gold-200); font-size: 14px; }
+    .tabs { max-width: 1240px; margin: 0 auto; padding: 0 16px; display: flex; gap: 4px; overflow-x: auto; }
+    .tabs button { background: none; border: 0; color: rgba(255, 255, 255, .65); padding: 12px 16px; cursor: pointer; border-bottom: 2px solid transparent; font-weight: 600; white-space: nowrap; }
+    .tabs button.on { color: #fff; border-color: var(--gold); }
+    main { max-width: 1240px; margin: 0 auto; padding: 24px 16px 80px; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .stat { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; }
+    .stat b { display: block; font-family: "Noto Serif Thai"; font-size: 28px; line-height: 1.2; }
+    .stat span { color: var(--muted); font-size: 13.5px; }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+    .toolbar input, .toolbar select { width: auto; flex: 1 1 180px; }
+    .toolbar .spacer { flex: 1; }
+    .panel { background: #fff; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { font-size: 12.5px; color: var(--muted); font-weight: 600; background: var(--ivory); letter-spacing: .03em; }
+    tr:last-child td { border-bottom: 0; }
+    td small { color: var(--muted); display: block; }
+    .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: var(--gold-50); color: #8A6A2D; border: 1px solid var(--gold-200); }
+    .pill--consult { background: #EEF3FC; color: #1D4190; border-color: #C9D7F2; }
+    .status { width: 140px; padding: 6px 10px; border-radius: 999px; font-weight: 600; font-size: 13px; }
+    .status[data-v="new"] { background: #FFF5E0; border-color: #F0D49A; }
+    .status[data-v="contacted"] { background: #EEF3FC; border-color: #C9D7F2; }
+    .status[data-v="confirmed"] { background: #EAF6F0; border-color: #B9E0CB; }
+    .status[data-v="paid"] { background: #DFF2E7; border-color: #94CFAE; color: var(--ok); }
+    .status[data-v="cancelled"] { background: #F5F5F5; color: var(--muted); }
+    .note { min-height: 38px; font-size: 13.5px; resize: vertical; }
+    .empty { padding: 48px; text-align: center; color: var(--muted); }
+    .msg { margin-top: 8px; display: block; }
+
+    .cards { display: grid; gap: 16px; }
+    .card { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: grid; gap: 12px; }
+    .card__head { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
+    .card__head h3 { font-size: 17px; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .check { display: flex; align-items: center; gap: 8px; font-weight: 500; color: var(--ink); }
+    .check input { width: 18px; height: 18px; }
+    .savebar { position: sticky; bottom: 0; background: rgba(250, 248, 243, .95); backdrop-filter: blur(8px); padding: 14px 0; margin-top: 16px; display: flex; gap: 10px; align-items: center; border-top: 1px solid var(--line); }
+    .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(120px); background: var(--navy-9); color: #fff; padding: 12px 22px; border-radius: 999px; transition: transform .3s; z-index: 10; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .hint { color: var(--muted); font-size: 13.5px; margin: 0 0 14px; }
+
+    @media (max-width: 860px) {
+      thead { display: none; }
+      table, tbody, tr, td { display: block; width: 100%; }
+      tr { border-bottom: 1px solid var(--line); padding: 10px 0; }
+      td { border: 0; padding: 6px 16px; }
+      .grid2, .grid3 { grid-template-columns: 1fr; }
+      .status { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<section class="login" id="loginView" hidden>
+  <form class="login__card" id="loginForm">
+    <img src="/images/logo-full.png" alt="ADS FAH MARKETING" style="width:150px;margin:0 auto 4px">
+    <h1 style="text-align:center">หลังบ้าน</h1>
+    <p>เข้าสู่ระบบเพื่อจัดการผู้สมัคร คอร์ส และรีวิว</p>
+    <label>รหัสผ่าน<input type="password" name="password" autocomplete="current-password" required autofocus></label>
+    <button class="btn btn--gold" type="submit">เข้าสู่ระบบ</button>
+    <p class="err" id="loginErr"></p>
+  </form>
+</section>
+
+<div id="appView" hidden>
+  <header class="top">
+    <div class="top__in">
+      <img src="/images/logo-mark-white.png" alt="" style="height:30px">
+      <h1>ADS FAH MARKETING <small>ระบบหลังบ้าน</small></h1>
+      <a href="/" target="_blank">ดูหน้าเว็บ ↗</a>
+      <button class="btn btn--ghost btn--sm" id="logoutBtn" style="color:#fff;border-color:rgba(255,255,255,.3)">ออกจากระบบ</button>
+    </div>
+    <nav class="tabs">
+      <button data-view="leads" class="on">ผู้สมัคร / ลูกค้า</button>
+      <button data-view="courses">คอร์สเรียน</button>
+      <button data-view="reviews">รีวิว</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Leads -->
+    <section data-section="leads">
+      <div class="stats" id="stats"></div>
+      <div class="toolbar">
+        <input type="search" id="q" placeholder="ค้นหาชื่อ เบอร์ LINE คอร์ส...">
+        <select id="fKind"><option value="">ทุกประเภท</option><option value="enroll">สมัครเรียน</option><option value="consult">ปรึกษาการตลาด</option></select>
+        <select id="fStatus"><option value="">ทุกสถานะ</option></select>
+        <button class="btn btn--ghost" id="refreshBtn">รีเฟรช</button>
+        <a class="btn" href="/api/admin/leads.csv" id="csvBtn">ดาวน์โหลด CSV</a>
+      </div>
+      <div class="panel">
+        <table>
+          <thead><tr><th>วันที่</th><th>ผู้ติดต่อ</th><th>คอร์ส / ความต้องการ</th><th>สถานะ</th><th>บันทึกภายใน</th><th></th></tr></thead>
+          <tbody id="leadRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Courses -->
+    <section data-section="courses" hidden>
+      <p class="hint">แก้ไขชื่อ ราคา รายละเอียด และรอบอบรมที่จะแสดงบนหน้าเว็บ ราคาเว้นว่างได้ (จะแสดงข้อความในช่อง “หมายเหตุราคา” แทน) รอบอบรม 1 บรรทัดต่อ 1 รอบ</p>
+      <div class="cards" id="courseCards"></div>
+      <div class="savebar">
+        <button class="btn btn--ghost" id="addCourse">+ เพิ่มคอร์ส</button>
+        <span style="flex:1"></span>
+        <button class="btn btn--gold" id="saveCourses">บันทึกคอร์สทั้งหมด</button>
+      </div>
+    </section>
+
+    <!-- Reviews -->
+    <section data-section="reviews" hidden>
+      <p class="hint">ใส่รีวิวจริงจากลูกค้า (ควรได้รับอนุญาตจากลูกค้าก่อนเผยแพร่) เมื่อเอาเครื่องหมาย “ตัวอย่าง” ออก ป้ายตัวอย่างบนหน้าเว็บจะหายไป</p>
+      <div class="cards" id="reviewCards"></div>
+      <div class="savebar">
+        <button class="btn btn--ghost" id="addReview">+ เพิ่มรีวิว</button>
+        <span style="flex:1"></span>
+        <button class="btn btn--gold" id="saveReviews">บันทึกรีวิวทั้งหมด</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const STATUSES = { new: 'ใหม่', contacted: 'ติดต่อแล้ว', confirmed: 'ยืนยันวันเรียน', paid: 'ชำระเงินแล้ว', cancelled: 'ยกเลิก' };
+
+  const api = async (path, opts = {}) => {
+    const res = await fetch(path, { ...opts, headers: { 'Content-Type': 'application/json', ...(opts.headers || {}) } });
+    if (res.status === 401 && !path.endsWith('/login')) { showLogin(); throw new Error('unauthorized'); }
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'เกิดข้อผิดพลาด');
+    return data;
+  };
+  const toast = (t) => { const el = $('#toast'); el.textContent = t; el.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('show'), 2200); };
+
+  function showLogin() { $('#appView').hidden = true; $('#loginView').hidden = false; }
+  function showApp() { $('#loginView').hidden = true; $('#appView').hidden = false; loadAll(); }
+
+  $('#loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    $('#loginErr').textContent = '';
+    try { await api('/api/admin/login', { method: 'POST', body: JSON.stringify({ password: e.target.password.value }) }); e.target.reset(); showApp(); }
+    catch (err) { $('#loginErr').textContent = err.message; }
+  });
+  $('#logoutBtn').addEventListener('click', async () => { await api('/api/admin/logout', { method: 'POST' }).catch(() => {}); showLogin(); });
+
+  $$('.tabs button').forEach((b) => b.addEventListener('click', () => {
+    $$('.tabs button').forEach((x) => x.classList.toggle('on', x === b));
+    $$('[data-section]').forEach((s) => (s.hidden = s.dataset.section !== b.dataset.view));
+  }));
+
+  // ---------- Leads ----------
+  let leads = [];
+  $('#fStatus').insertAdjacentHTML('beforeend', Object.entries(STATUSES).map(([k, v]) => `<option value="${k}">${v}</option>`).join(''));
+  const fmtDate = (iso) => new Date(iso).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' });
+
+  async function loadLeads() { leads = await api('/api/admin/leads'); renderLeads(); }
+  function renderLeads() {
+    const st = (k) => leads.filter((l) => l.status === k).length;
+    const today = new Date().toDateString();
+    $('#stats').innerHTML = [
+      [leads.length, 'ทั้งหมด'],
+      [leads.filter((l) => new Date(l.createdAt).toDateString() === today).length, 'เข้ามาวันนี้'],
+      [st('new'), 'รอติดต่อ'],
+      [st('confirmed'), 'ยืนยันวันเรียน'],
+      [st('paid'), 'ชำระเงินแล้ว']
+    ].map(([n, t]) => `<div class="stat"><b>${n}</b><span>${t}</span></div>`).join('');
+
+    const q = $('#q').value.trim().toLowerCase(), fk = $('#fKind').value, fs = $('#fStatus').value;
+    const rows = leads.filter((l) => (!fk || l.kind === fk) && (!fs || l.status === fs) &&
+      (!q || [l.name, l.phone, l.lineId, l.email, l.courseName, l.business, l.message].join(' ').toLowerCase().includes(q)));
+    $('#leadRows').innerHTML = rows.length ? rows.map((l) => `
+      <tr data-id="${esc(l.id)}">
+        <td>${fmtDate(l.createdAt)}<small><span class="pill ${l.kind === 'consult' ? 'pill--consult' : ''}">${l.kind === 'consult' ? 'ปรึกษา' : 'สมัครเรียน'}</span></small></td>
+        <td><b>${esc(l.name)}</b>
+          <small><a href="tel:${esc(l.phone.replace(/[^\d+]/g, ''))}">${esc(l.phone)}</a></small>
+          ${l.lineId ? `<small>LINE: ${esc(l.lineId)}</small>` : ''}
+          ${l.email ? `<small>${esc(l.email)}</small>` : ''}</td>
+        <td>${esc(l.courseName) || '-'}
+          ${l.format ? `<small>รูปแบบ: ${esc(l.format)}</small>` : ''}
+          ${l.preferredDate ? `<small>วันที่สะดวก: ${esc(l.preferredDate)}</small>` : ''}
+          ${l.business ? `<small>ธุรกิจ: ${esc(l.business)}</small>` : ''}
+          ${l.budget ? `<small>งบ: ${esc(l.budget)}</small>` : ''}
+          ${l.message ? `<small style="white-space:pre-wrap">“${esc(l.message)}”</small>` : ''}</td>
+        <td><select class="status" data-v="${l.status}">${Object.entries(STATUSES).map(([k, v]) => `<option value="${k}" ${k === l.status ? 'selected' : ''}>${v}</option>`).join('')}</select></td>
+        <td><textarea class="note" rows="2" placeholder="บันทึก...">${esc(l.note)}</textarea></td>
+        <td><button class="btn btn--danger btn--sm del">ลบ</button></td>
+      </tr>`).join('') : `<tr><td colspan="6" class="empty">${leads.length ? 'ไม่พบรายการตามตัวกรอง' : 'ยังไม่มีผู้สมัคร — เมื่อมีคนกรอกฟอร์มบนหน้าเว็บ ข้อมูลจะแสดงที่นี่'}</td></tr>`;
+  }
+  ['#q', '#fKind', '#fStatus'].forEach((s) => $(s).addEventListener('input', renderLeads));
+  $('#refreshBtn').addEventListener('click', () => loadLeads().then(() => toast('อัปเดตแล้ว')));
+
+  $('#leadRows').addEventListener('change', async (e) => {
+    const tr = e.target.closest('tr'); if (!tr) return;
+    const id = tr.dataset.id;
+    const body = e.target.classList.contains('status') ? { status: e.target.value } : e.target.classList.contains('note') ? { note: e.target.value } : null;
+    if (!body) return;
+    try {
+      const updated = await api('/api/admin/leads/' + id, { method: 'PATCH', body: JSON.stringify(body) });
+      Object.assign(leads.find((l) => l.id === id), updated);
+      if (body.status) { e.target.dataset.v = body.status; renderLeads(); }
+      toast('บันทึกแล้ว');
+    } catch (err) { toast(err.message); }
+  });
+  $('#leadRows').addEventListener('click', async (e) => {
+    if (!e.target.classList.contains('del')) return;
+    const tr = e.target.closest('tr'); const l = leads.find((x) => x.id === tr.dataset.id);
+    if (!confirm(`ลบข้อมูลของ "${l.name}" ถาวร? การลบไม่สามารถย้อนกลับได้`)) return;
+    await api('/api/admin/leads/' + l.id, { method: 'DELETE' });
+    leads = leads.filter((x) => x.id !== l.id); renderLeads(); toast('ลบแล้ว');
+  });
+
+  // ---------- Courses ----------
+  let courses = [];
+  async function loadCourses() { courses = await fetch('/api/courses').then((r) => r.json()); renderCourses(); }
+  function courseCard(c, i) {
+    return `<div class="card" data-i="${i}">
+      <div class="card__head"><h3>${esc(c.type || 'คอร์สใหม่')} · ${esc(c.name || '')}</h3>
+        <div style="display:flex;gap:6px"><button class="btn btn--ghost btn--sm up" ${i === 0 ? 'disabled' : ''}>↑</button><button class="btn btn--danger btn--sm rm">ลบ</button></div></div>
+      <div class="grid3">
+        <label>ประเภท (ป้าย)<input data-k="type" value="${esc(c.type)}" placeholder="Private Class 1:1"></label>
+        <label>ราคา (บาท)<input data-k="price" type="number" min="0" value="${c.price ?? ''}" placeholder="เว้นว่าง = ไม่แสดงราคา"></label>
+        <label>หมายเหตุราคา<input data-k="priceNote" value="${esc(c.priceNote)}" placeholder="บาท / คอร์ส"></label>
+      </div>
+      <label>ชื่อคอร์ส<input data-k="name" value="${esc(c.name)}"></label>
+      <label>คำโปรย<input data-k="tagline" value="${esc(c.tagline)}"></label>
+      <div class="grid2">
+        <label>รายละเอียด (1 บรรทัด = 1 ข้อ)<textarea data-k="bullets" rows="6">${esc((c.bullets || []).join('\n'))}</textarea></label>
+        <label>รอบอบรมที่เปิดรับ (1 บรรทัด = 1 รอบ)<textarea data-k="dates" rows="6" placeholder="เช่น 7 ธ.ค. 2569 · 09:00–16:00">${esc((c.dates || []).join('\n'))}</textarea></label>
+      </div>
+      <label class="check"><input type="checkbox" data-k="featured" ${c.featured ? 'checked' : ''}> แสดงเป็นคอร์สแนะนำ (ไฮไลต์)</label>
+    </div>`;
+  }
+  function renderCourses() { $('#courseCards').innerHTML = courses.map(courseCard).join('') || '<div class="empty">ยังไม่มีคอร์ส</div>'; }
+  function readCards(container, list) {
+    $$('.card', container).forEach((card) => {
+      const o = list[+card.dataset.i];
+      $$('[data-k]', card).forEach((inp) => {
+        const k = inp.dataset.k;
+        if (inp.type === 'checkbox') o[k] = inp.checked;
+        else if (k === 'bullets' || k === 'dates') o[k] = inp.value.split('\n').map((s) => s.trim()).filter(Boolean);
+        else if (k === 'price') o[k] = inp.value === '' ? null : Number(inp.value);
+        else if (k === 'rating') o[k] = Number(inp.value);
+        else o[k] = inp.value;
+      });
+    });
+  }
+  $('#courseCards').addEventListener('click', (e) => {
+    const card = e.target.closest('.card'); if (!card) return;
+    const i = +card.dataset.i;
+    if (e.target.classList.contains('rm')) { if (!confirm('ลบคอร์สนี้? (ยังไม่บันทึกจนกว่าจะกด “บันทึกคอร์สทั้งหมด”)')) return; readCards($('#courseCards'), courses); courses.splice(i, 1); renderCourses(); }
+    if (e.target.classList.contains('up')) { readCards($('#courseCards'), courses); [courses[i - 1], courses[i]] = [courses[i], courses[i - 1]]; renderCourses(); }
+  });
+  $('#addCourse').addEventListener('click', () => { readCards($('#courseCards'), courses); courses.push({ type: '', name: '', tagline: '', price: null, priceNote: '', bullets: [], dates: [], featured: false }); renderCourses(); $('#courseCards').lastElementChild.scrollIntoView({ behavior: 'smooth' }); });
+  $('#saveCourses').addEventListener('click', async () => {
+    readCards($('#courseCards'), courses);
+    try { courses = await api('/api/admin/courses', { method: 'PUT', body: JSON.stringify(courses) }); renderCourses(); toast('บันทึกคอร์สแล้ว'); }
+    catch (err) { toast(err.message); }
+  });
+
+  // ---------- Reviews ----------
+  let reviews = [];
+  async function loadReviews() { reviews = await fetch('/api/reviews').then((r) => r.json()); renderReviews(); }
+  function reviewCard(r, i) {
+    return `<div class="card" data-i="${i}">
+      <div class="card__head"><h3>${esc(r.name || 'รีวิวใหม่')}</h3><button class="btn btn--danger btn--sm rm">ลบ</button></div>
+      <div class="grid3">
+        <label>ชื่อลูกค้า<input data-k="name" value="${esc(r.name)}"></label>
+        <label>ตำแหน่ง / ธุรกิจ<input data-k="role" value="${esc(r.role)}"></label>
+        <label>คะแนน<select data-k="rating">${[5, 4, 3, 2, 1].map((n) => `<option ${n === r.rating ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+      </div>
+      <label>ข้อความรีวิว<textarea data-k="text" rows="3">${esc(r.text)}</textarea></label>
+      <div class="grid3">
+        <label>ผลลัพธ์ (ป้ายสั้น ๆ)<input data-k="result" value="${esc(r.result)}" placeholder="เช่น ค่าแอดต่อแชทลดลง"></label>
+        <label>ที่มา<select data-k="source"><option value="">ทั่วไป (แสดงดาว)</option><option value="facebook" ${r.source === 'facebook' ? 'selected' : ''}>รีวิวจาก Facebook</option></select></label>
+        <label>วันที่รีวิว<input data-k="date" value="${esc(r.date)}" placeholder="เช่น 18 ก.พ. 2568"></label>
+      </div>
+      <label class="check"><input type="checkbox" data-k="sample" ${r.sample ? 'checked' : ''}> เป็นรีวิวตัวอย่าง (แสดงป้าย “ตัวอย่าง” บนหน้าเว็บ)</label>
+    </div>`;
+  }
+  function renderReviews() { $('#reviewCards').innerHTML = reviews.map(reviewCard).join('') || '<div class="empty">ยังไม่มีรีวิว — ส่วนรีวิวจะถูกซ่อนบนหน้าเว็บ</div>'; }
+  $('#reviewCards').addEventListener('click', (e) => {
+    if (!e.target.classList.contains('rm')) return;
+    readCards($('#reviewCards'), reviews); reviews.splice(+e.target.closest('.card').dataset.i, 1); renderReviews();
+  });
+  $('#addReview').addEventListener('click', () => { readCards($('#reviewCards'), reviews); reviews.push({ name: '', role: '', text: '', result: '', rating: 5, sample: false, source: 'facebook', date: '' }); renderReviews(); $('#reviewCards').lastElementChild.scrollIntoView({ behavior: 'smooth' }); });
+  $('#saveReviews').addEventListener('click', async () => {
+    readCards($('#reviewCards'), reviews);
+    try { reviews = await api('/api/admin/reviews', { method: 'PUT', body: JSON.stringify(reviews) }); renderReviews(); toast('บันทึกรีวิวแล้ว'); }
+    catch (err) { toast(err.message); }
+  });
+
+  function loadAll() { loadLeads().catch(() => {}); loadCourses(); loadReviews(); }
+  api('/api/admin/me').then((me) => { if (me.local) $('#logoutBtn').hidden = true; showApp(); }).catch(() => showLogin());
+})();
+</script>
+</body>
+</html>
