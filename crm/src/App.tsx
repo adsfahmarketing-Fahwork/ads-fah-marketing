@@ -16,6 +16,7 @@ import { SettingsPage } from './pages/Settings'
 import { PrivacyPage } from './pages/Privacy'
 import { PublicBriefPage } from './pages/PublicBrief'
 import { NAV } from './lib/roles'
+import { BASE_PATH } from './lib/basePath'
 import { CustomersPage } from './pages/Customers'
 import { CustomerDetailPage } from './pages/CustomerDetail'
 import { PagesPage } from './pages/PagesPage'
@@ -31,7 +32,7 @@ const SCREENS: Record<string, ReactElement> = {
 
 export default function App() {
   return (
-    <Router>
+    <Router basename={BASE_PATH || undefined}>
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginPage />} />

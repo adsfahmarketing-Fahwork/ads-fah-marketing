@@ -3,6 +3,7 @@ import { Alert, Badge, Empty, Field, PageHeader, Spinner } from '../components/u
 import { supabase } from '../lib/supabase'
 import { dbError, useAsync } from '../lib/useAsync'
 import { formatThaiDate } from '../lib/format'
+import { appUrl } from '../lib/basePath'
 
 interface LinkRow {
   id: string; label: string | null; expires_at: string; revoked_at: string | null; max_submissions: number; submission_count: number
@@ -12,7 +13,7 @@ interface LinkRow {
 export const customerMessage = (url: string) =>
   `ขอข้อมูลเพื่อ Record รายละเอียด\n(ดูแลเพจ 30 วัน)\n\n📍ข้อมูลสำหรับยิง Ads\n\nPage :\n\n“สำหรับยิงแอดโฆษณา”\n\n1. งบประมาณต่อเดือน\n2. ช่วงอายุของลูกค้า\n3. บริเวณ เขตพื้นที่ต้องการที่จะยิง\n4. Target เป็นกลุ่มคนไหน\n\nกรอกข้อมูลได้ที่ลิงก์นี้ค่ะ 👇\n${url}\n\n**ขอทราบข้อมูลเบื้องต้นไว้นะคะ นอกนั้นเดี๋ยวเป็นหน้าที่ของทางทีมฟ้านำส่งโฆษณา หากลุ่มเป้าหมายให้เองค่ะ`
 
-export const briefUrl = (token: string) => `${window.location.origin}/brief/${token}`
+export const briefUrl = (token: string) => appUrl(`/brief/${token}`)
 
 function linkState(l: LinkRow, now = Date.now()) {
   if (l.revoked_at) return ['ยกเลิกแล้ว', 'bg-slate-200 text-slate-600'] as const

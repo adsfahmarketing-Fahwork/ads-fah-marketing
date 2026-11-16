@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
+import { appUrl } from '../lib/basePath'
 import { thaiAuthError, type Role } from '../lib/roles'
 
 export interface Profile {
@@ -79,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => { await supabase.auth.signOut(); setRecovery(false) }, [])
   const sendReset = useCallback(async (email: string) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: appUrl('/reset-password'),
     })
     return error ? thaiAuthError(error.message) : null
   }, [])
