@@ -1,0 +1,19 @@
+name: CRM CI
+on:
+  push:
+    paths: ['crm/**', '.github/workflows/crm-ci.yml']
+  pull_request:
+    paths: ['crm/**']
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: crm } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: crm/package-lock.json }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test          # RLS/สิทธิ์/สัญญา/Brief/ความปลอดภัย บน PostgreSQL จริง (PGlite)
+      - run: npm run build
+      - run: npm audit --omit=dev --audit-level=high
