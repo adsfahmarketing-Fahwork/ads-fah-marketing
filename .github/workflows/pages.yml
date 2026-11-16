@@ -23,6 +23,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+
+      # เวอร์ชันสาธิตของระบบ CRM (ข้อมูลตัวอย่างล้วน ไม่เชื่อมฐานข้อมูลจริง) เผยแพร่ที่ /crm-demo/
+      # ขั้นตอนนี้ "ไม่ขวาง" การเผยแพร่เว็บไซต์: ถ้า build ไม่ผ่าน เว็บไซต์หลักยังถูกเผยแพร่ตามปกติ
+      - uses: actions/setup-node@v4
+        continue-on-error: true
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: crm/package-lock.json
+      - name: Build CRM demo (optional)
+        continue-on-error: true
+        working-directory: crm
+        run: |
+          npm ci
+          npm run build:demo
+          rm -rf ../public/crm-demo
+          cp -R dist-demo ../public/crm-demo
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: public

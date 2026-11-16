@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthProvider'
 import { RequireAuth } from './auth/guards'
 import { Layout } from './components/Layout'
@@ -21,6 +21,9 @@ import { CustomerDetailPage } from './pages/CustomerDetail'
 import { PagesPage } from './pages/PagesPage'
 import { ContractsPage } from './pages/Contracts'
 
+// โหมดสาธิตโฮสต์ใน sub-path ของ GitHub Pages จึงใช้ HashRouter
+const Router = import.meta.env.VITE_DEMO === '1' ? HashRouter : BrowserRouter
+
 const SCREENS: Record<string, ReactElement> = {
   customers: <CustomersPage />, pages: <PagesPage />, contracts: <ContractsPage />,
   team: <TeamPage />, settings: <SettingsPage />, reports: <ReportsPage />, tasks: <TasksPage />, 'brief-builder': <BriefBuilderPage />, briefs: <BriefsPage />,
@@ -28,7 +31,7 @@ const SCREENS: Record<string, ReactElement> = {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
@@ -47,6 +50,6 @@ export default function App() {
           </Route>
         </Routes>
       </AuthProvider>
-    </BrowserRouter>
+    </Router>
   )
 }

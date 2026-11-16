@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider'
 import { ROLE_LABEL, isManagement, navFor } from '../lib/roles'
 import { NotificationBell } from './NotificationBell'
 import { supabase } from '../lib/supabase'
 import { useIdleLogout } from '../lib/useIdleLogout'
+
+const DemoBanner = import.meta.env.VITE_DEMO === '1' ? lazy(() => import('../demo/DemoBanner')) : null
 
 export function Layout() {
   const { profile, signOut, setNotice } = useAuth()
@@ -37,10 +39,12 @@ export function Layout() {
   )
 
   return (
-    <div className="min-h-screen bg-slate-50 lg:flex">
+    <div className="min-h-screen bg-slate-50">
+      {DemoBanner && <Suspense fallback={null}><DemoBanner /></Suspense>}
+      <div className="lg:flex">
       {/* Sidebar (desktop) */}
       <aside className="hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-white lg:flex">
-        <div className="border-b border-slate-100 p-4"><img src="/logo-full.png" alt="ADS FAH MARKETING" className="mx-auto h-24 w-auto" /></div>
+        <div className="border-b border-slate-100 p-4"><img src={`${import.meta.env.BASE_URL}logo-full.png`} alt="ADS FAH MARKETING" className="mx-auto h-24 w-auto" /></div>
         {nav}
         <div className="border-t border-slate-100 p-3 text-xs text-slate-400">ADS FAH CRM</div>
       </aside>
@@ -50,7 +54,7 @@ export function Layout() {
         <div className="fixed inset-0 z-40 lg:hidden" role="dialog" aria-modal="true">
           <button className="absolute inset-0 bg-black/40" aria-label="ปิดเมนู" onClick={() => setOpen(false)} />
           <aside className="absolute inset-y-0 left-0 flex w-72 max-w-[85%] flex-col bg-white shadow-xl">
-            <div className="border-b border-slate-100 p-4"><img src="/logo-full.png" alt="ADS FAH MARKETING" className="mx-auto h-20 w-auto" /></div>
+            <div className="border-b border-slate-100 p-4"><img src={`${import.meta.env.BASE_URL}logo-full.png`} alt="ADS FAH MARKETING" className="mx-auto h-20 w-auto" /></div>
             {nav}
           </aside>
         </div>
@@ -59,7 +63,7 @@ export function Layout() {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur">
           <button className="btn-ghost !px-3 lg:hidden" onClick={() => setOpen(true)} aria-label="เปิดเมนู">☰</button>
-          <div className="min-w-0 flex-1 lg:hidden"><img src="/logo-mark.png" alt="ADS FAH" className="h-8 w-auto" /></div>
+          <div className="min-w-0 flex-1 lg:hidden"><img src={`${import.meta.env.BASE_URL}logo-mark.png`} alt="ADS FAH" className="h-8 w-auto" /></div>
           <div className="hidden flex-1 lg:block" />
           {profile && <NotificationBell userId={profile.id} />}
           <div className="hidden min-w-0 text-right leading-tight sm:block">
@@ -69,6 +73,7 @@ export function Layout() {
           <button className="btn-ghost" onClick={() => void signOut()}>ออกจากระบบ</button>
         </header>
         <main className="mx-auto w-full max-w-7xl flex-1 p-4 sm:p-6"><Outlet /></main>
+      </div>
       </div>
     </div>
   )

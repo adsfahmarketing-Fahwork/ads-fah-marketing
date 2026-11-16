@@ -11,7 +11,7 @@ export function PrivacyPage() {
   return (
     <div className="min-h-screen bg-brand-soft px-4 py-8">
       <div className="mx-auto max-w-3xl">
-        <div className="mb-4 flex justify-center"><img src="/logo-full.png" alt="ADS FAH MARKETING" className="h-28 w-auto" /></div>
+        <div className="mb-4 flex justify-center"><img src={`${import.meta.env.BASE_URL}logo-full.png`} alt="ADS FAH MARKETING" className="h-28 w-auto" /></div>
         <article className="card !p-6 sm:!p-8">
           <h1 className="mb-1 text-2xl font-bold">ประกาศความเป็นส่วนตัว (Privacy Notice)</h1>
           <p className="mb-6 text-sm text-slate-500">บริษัท แอดส์ฟ้ามาเก็ตติ้ง จำกัด (ADS FAH MARKETING Co., Ltd.) · ตาม พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA)</p>

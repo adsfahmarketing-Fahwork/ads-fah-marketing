@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 export function Logo({ size = 'md' }: { size?: 'md' | 'lg' }) {
-  return <img src="/logo-full.png" alt="ADS FAH MARKETING" className={size === 'lg' ? 'h-40 w-auto' : 'h-14 w-auto'} />
+  return <img src={`${import.meta.env.BASE_URL}logo-full.png`} alt="ADS FAH MARKETING" className={size === 'lg' ? 'h-40 w-auto' : 'h-14 w-auto'} />
 }
 
 export function Spinner({ full }: { full?: boolean }) {

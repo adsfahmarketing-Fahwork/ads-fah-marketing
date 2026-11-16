@@ -22,7 +22,7 @@ function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-brand-soft px-4 py-8">
       <div className="mx-auto max-w-2xl">
-        <div className="mb-4 flex justify-center"><img src="/logo-full.png" alt="ADS FAH MARKETING" className="h-32 w-auto" /></div>
+        <div className="mb-4 flex justify-center"><img src={`${import.meta.env.BASE_URL}logo-full.png`} alt="ADS FAH MARKETING" className="h-32 w-auto" /></div>
         {children}
         <p className="mt-6 text-center text-xs text-slate-500">ADS FAH MARKETING Co., Ltd. · ข้อมูลของท่านจะถูกใช้เพื่อการวางแผนและให้บริการโฆษณาเท่านั้น และเก็บรักษาตามประกาศความเป็นส่วนตัว (PDPA)</p>
       </div>

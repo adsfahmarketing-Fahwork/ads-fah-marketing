@@ -56,6 +56,10 @@ export function LoginPage() {
         </div>
         {(error || notice) && <Alert>{error ?? notice}</Alert>}
         <button className="btn-primary w-full" disabled={busy || !email || !password}>{busy ? 'กำลังเข้าสู่ระบบ…' : 'เข้าสู่ระบบ'}</button>
+        {import.meta.env.VITE_DEMO === '1' && (
+          <div className="rounded-lg bg-brand-soft p-3 text-xs text-slate-700">
+            <b>โหมดสาธิต</b> — บัญชีตัวอย่าง (รหัสผ่าน <code>demo</code>):<br />owner@demo.example · manager@demo.example · admin@demo.example
+          </div>)}
         <div className="text-center text-sm"><Link to="/forgot-password" className="text-brand-dark hover:underline">ลืมรหัสผ่าน?</Link></div>
       </form>
     </AuthShell>

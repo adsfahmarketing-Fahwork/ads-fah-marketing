@@ -33,3 +33,16 @@ describe('สุขอนามัยของโค้ดฝั่งเว็�
     expect(sql).not.toMatch(/eyJ[A-Za-z0-9_-]{20,}|password\s*=\s*'[^']{6,}'/i)
   })
 })
+
+describe('โหมดสาธิตต้องไม่ปนกับระบบจริง', () => {
+  it('โค้ดสาธิตถูกอ้างถึงเฉพาะภายใต้เงื่อนไข VITE_DEMO เท่านั้น', () => {
+    const importers = src.filter(([f, c]) => !f.includes('/demo/') && /from ['"].*\/demo\/|import\(['"].*\/demo\//.test(c))
+    for (const [f, c] of importers) {
+      for (const m of c.matchAll(/import\(['"][^'"]*\/demo\/[^'"]*['"]\)/g)) {
+        const before = c.slice(Math.max(0, m.index! - 200), m.index!)
+        expect(/VITE_DEMO/.test(before), `${f}: ${m[0]}`).toBe(true)
+      }
+      expect(/^import .* from ['"].*\/demo\//m.test(c), `${f} import แบบ static`).toBe(false)
+    }
+  })
+})
