@@ -9,6 +9,9 @@ interface LinkRow {
   created_at: string; customers: { business_name: string }; pages: { page_name: string } | null
 }
 
+export const customerMessage = (url: string) =>
+  `ขอข้อมูลเพื่อ Record รายละเอียด\n(ดูแลเพจ 30 วัน)\n\n📍ข้อมูลสำหรับยิง Ads\n\nPage :\n\n“สำหรับยิงแอดโฆษณา”\n\n1. งบประมาณต่อเดือน\n2. ช่วงอายุของลูกค้า\n3. บริเวณ เขตพื้นที่ต้องการที่จะยิง\n4. Target เป็นกลุ่มคนไหน\n\nกรอกข้อมูลได้ที่ลิงก์นี้ค่ะ 👇\n${url}\n\n**ขอทราบข้อมูลเบื้องต้นไว้นะคะ นอกนั้นเดี๋ยวเป็นหน้าที่ของทางทีมฟ้านำส่งโฆษณา หากลุ่มเป้าหมายให้เองค่ะ`
+
 export const briefUrl = (token: string) => `${window.location.origin}/brief/${token}`
 
 function linkState(l: LinkRow, now = Date.now()) {
@@ -32,6 +35,7 @@ export function BriefBuilderPage() {
   const [busy, setBusy] = useState(false)
   const [created, setCreated] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [copiedMsg, setCopiedMsg] = useState(false)
   const custPages = (lists.data?.pages ?? []).filter((p) => p.customer_id === f.customer_id)
 
   async function submit(e: FormEvent) {
@@ -44,7 +48,7 @@ export function BriefBuilderPage() {
     const { data, error } = await supabase.rpc('create_brief_link', { p_customer_id: f.customer_id, p_page_id: f.page_id, p_label: f.label || null, p_expires_days: days, p_max_submissions: max })
     setBusy(false)
     if (error || !data?.[0]) return setErr(dbError(error))
-    setCreated(briefUrl(data[0].token)); lists.reload()
+    setCreated(briefUrl(data[0].token)); setCopiedMsg(false); lists.reload()
   }
   async function revoke(id: string) {
     if (!confirm('ยกเลิกลิงก์นี้? ลูกค้าจะเปิดฟอร์มไม่ได้อีก')) return
@@ -54,6 +58,11 @@ export function BriefBuilderPage() {
   async function copy() {
     if (!created) return
     try { await navigator.clipboard.writeText(created); setCopied(true) } catch { setCopied(false) }
+  }
+
+  async function copyMsg() {
+    if (!created) return
+    try { await navigator.clipboard.writeText(customerMessage(created)); setCopiedMsg(true) } catch { setCopiedMsg(false) }
   }
 
   return (
@@ -72,7 +81,7 @@ export function BriefBuilderPage() {
       {created && (
         <div className="mb-6"><Alert kind="success">
           <p className="mb-2 font-semibold">สร้างลิงก์สำเร็จ — คัดลอกและส่งให้ลูกค้าได้เลย</p>
-          <div className="flex flex-wrap items-center gap-2"><input readOnly className="input flex-1 font-mono text-xs" value={created} onFocus={(e) => e.target.select()} /><button type="button" className="btn-primary" onClick={copy}>{copied ? 'คัดลอกแล้ว ✓' : 'คัดลอกลิงก์'}</button></div>
+          <div className="flex flex-wrap items-center gap-2"><input readOnly className="input flex-1 font-mono text-xs" value={created} onFocus={(e) => e.target.select()} /><button type="button" className="btn-ghost" onClick={copy}>{copied ? 'คัดลอกแล้ว ✓' : 'คัดลอกลิงก์'}</button><button type="button" className="btn-primary" onClick={copyMsg}>{copiedMsg ? 'คัดลอกแล้ว ✓' : 'คัดลอกข้อความส่งลูกค้า'}</button></div>
           <p className="mt-2 text-xs">เพื่อความปลอดภัย ระบบเก็บเฉพาะค่า hash ของลิงก์ จะแสดงลิงก์นี้ให้เห็นเพียงครั้งเดียว หากทำหาย ให้สร้างลิงก์ใหม่และยกเลิกลิงก์เดิม</p>
         </Alert></div>)}
 

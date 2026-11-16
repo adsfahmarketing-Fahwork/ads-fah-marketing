@@ -35,6 +35,8 @@ export function PublicBriefPage() {
   const [info, setInfo] = useState<Info | null>(null)
   const [f, setF] = useState<Record<string, string>>({ website: '' })
   const [prov, setProv] = useState<string[]>([])
+  const [areaText, setAreaText] = useState('')
+  const [moreOpen, setMoreOpen] = useState(false)
   const [files, setFiles] = useState<File[]>([])
   const [err, setErr] = useState<Record<string, string>>({})
   const [formErr, setFormErr] = useState<string | null>(null)
@@ -76,6 +78,7 @@ export function PublicBriefPage() {
     if (!consent) e.consent = 'กรุณารับทราบประกาศความเป็นส่วนตัวก่อนส่งข้อมูล'
     if (files.length > 10) e.files = 'แนบไฟล์ได้ไม่เกิน 10 ไฟล์'
     for (const x of files) { if (!ALLOWED.includes(x.type)) e.files = `ไฟล์ ${x.name} ไม่รองรับ (รองรับรูปภาพ วิดีโอ MP4/MOV และ PDF)`; else if (x.size > MAX_FILE) e.files = `ไฟล์ ${x.name} ใหญ่เกิน 20 MB` }
+    if (['fb_page_url', 'instagram_url', 'contact_link', 'files'].some((k) => e[k])) setMoreOpen(true)
     setErr(e); return !Object.keys(e).length
   }
 
@@ -97,51 +100,66 @@ export function PublicBriefPage() {
     setDone(true)
   }
 
+  const addArea = () => {
+    const v = areaText.trim().slice(0, 100)
+    if (v && !prov.includes(v) && prov.length < 77) setProv([...prov, v])
+    setAreaText('')
+  }
+
   return (
     <Shell>
       <form onSubmit={submit} className="space-y-6" noValidate>
         <div className="card">
-          <h1 className="mb-2 text-xl font-bold">แบบฟอร์มข้อมูลเริ่มต้นบริการโฆษณา</h1>
-          <p className="text-sm leading-relaxed text-slate-700">กรุณากรอกข้อมูลเบื้องต้นสำหรับการวางแผนโฆษณา Facebook และ Instagram เพื่อให้ทีมงาน ADS FAH MARKETING สามารถนำข้อมูลไปวิเคราะห์และวางแผนการโฆษณาให้เหมาะสมกับธุรกิจของท่าน</p>
-          <p className="mt-2 text-sm leading-relaxed text-slate-700">ข้อมูลกลุ่มเป้าหมายที่กรอกเป็นข้อมูลเบื้องต้น โดยทีมงานจะเป็นผู้วิเคราะห์และปรับกลยุทธ์โฆษณาเพิ่มเติมให้เหมาะสม</p>
+          <h1 className="text-xl font-bold">ขอข้อมูลเพื่อ Record รายละเอียด</h1>
+          <p className="mb-3 font-medium text-brand-dark">(ดูแลเพจ 30 วัน)</p>
+          <p className="text-sm leading-relaxed text-slate-700">ขอทราบข้อมูลเบื้องต้นไว้นะคะ นอกนั้นเดี๋ยวเป็นหน้าที่ของทางทีมฟ้านำส่งโฆษณา หากลุ่มเป้าหมายให้เองค่ะ</p>
           <div className="mt-3"><Alert kind="info">🔒 กรุณา<b>อย่ากรอกรหัสผ่าน Facebook หรือ Access Token</b> ในแบบฟอร์มนี้ ทีมงานจะไม่ขอข้อมูลดังกล่าวผ่านแบบฟอร์ม</Alert></div>
         </div>
 
         <section className="card grid gap-4 sm:grid-cols-2">
-          <h2 className="font-semibold text-brand-dark sm:col-span-2">ส่วนที่ 1 ข้อมูลธุรกิจ</h2>
-          <div className="sm:col-span-2"><Field label="ชื่อธุรกิจ *" error={err.business_name}><input className="input" value={f.business_name ?? ''} onChange={set('business_name')} maxLength={200} /></Field></div>
-          <Field label="ชื่อผู้ติดต่อ *" error={err.contact_name}><input className="input" value={f.contact_name ?? ''} onChange={set('contact_name')} maxLength={200} /></Field>
-          <Field label="เบอร์โทรศัพท์ *" error={err.phone}><input className="input" inputMode="tel" value={f.phone ?? ''} onChange={set('phone')} /></Field>
-          <Field label="LINE ID"><input className="input" value={f.line_id ?? ''} onChange={set('line_id')} maxLength={100} /></Field>
-          <Field label="ชื่อ Facebook Page"><input className="input" value={f.fb_page_name ?? ''} onChange={set('fb_page_name')} maxLength={200} /></Field>
-          <div className="sm:col-span-2"><Field label="ลิงก์ Facebook Page" error={err.fb_page_url}><input className="input" inputMode="url" placeholder="https://" value={f.fb_page_url ?? ''} onChange={set('fb_page_url')} /></Field></div>
-          <div className="sm:col-span-2"><Field label="ลิงก์ Instagram" error={err.instagram_url}><input className="input" inputMode="url" placeholder="https://" value={f.instagram_url ?? ''} onChange={set('instagram_url')} /></Field></div>
-          <div className="sm:col-span-2"><Field label="ประเภทสินค้าและบริการ"><input className="input" value={f.product_category ?? ''} onChange={set('product_category')} maxLength={500} /></Field></div>
-        </section>
-
-        <section className="card grid gap-4 sm:grid-cols-2">
-          <h2 className="font-semibold text-brand-dark sm:col-span-2">ส่วนที่ 2 ข้อมูลสำหรับยิงโฆษณา</h2>
-          <Field label="งบประมาณโฆษณาต่อเดือน (บาท)" error={err.ad_budget_monthly}><input className="input" inputMode="decimal" value={f.ad_budget_monthly ?? ''} onChange={set('ad_budget_monthly')} /></Field>
-          <Field label="ช่วงอายุลูกค้าที่ต้องการ (ปี)" error={err.age}>
+          <div className="sm:col-span-2"><h2 className="font-semibold text-brand-dark">📍 ข้อมูลสำหรับยิง Ads</h2><p className="text-sm text-slate-500">“สำหรับยิงแอดโฆษณา”</p></div>
+          <div className="sm:col-span-2"><Field label="Page"><input className="input" value={f.fb_page_name ?? ''} onChange={set('fb_page_name')} maxLength={200} /></Field></div>
+          <Field label="1. งบประมาณต่อเดือน (บาท)" error={err.ad_budget_monthly}><input className="input" inputMode="decimal" value={f.ad_budget_monthly ?? ''} onChange={set('ad_budget_monthly')} /></Field>
+          <Field label="2. ช่วงอายุของลูกค้า (ปี)" error={err.age}>
             <div className="flex items-center gap-2"><input className="input" inputMode="numeric" placeholder="จาก" value={f.age_min ?? ''} onChange={set('age_min')} /><span>–</span><input className="input" inputMode="numeric" placeholder="ถึง" value={f.age_max ?? ''} onChange={set('age_max')} /></div>
           </Field>
           <div className="sm:col-span-2">
-            <span className="label">พื้นที่หรือจังหวัดที่ต้องการยิงโฆษณา</span>
-            <select className="input" value="" onChange={(e) => { const v = e.target.value; if (v && !prov.includes(v)) setProv([...prov, v]) }}>
-              <option value="">— เลือกจังหวัด (เลือกได้หลายจังหวัด) —</option>{PROVINCES.filter((p) => !prov.includes(p)).map((p) => <option key={p} value={p}>{p}</option>)}
-            </select>
-            {!!prov.length && <div className="mt-2 flex flex-wrap gap-2">{prov.map((p) => <button type="button" key={p} onClick={() => setProv(prov.filter((x) => x !== p))} className="rounded-full bg-brand-soft px-3 py-1 text-sm text-brand-dark">{p} ✕</button>)}</div>}
+            <span className="label">3. บริเวณ / เขตพื้นที่ที่ต้องการยิง</span>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <select className="input" value="" onChange={(e) => { const v = e.target.value; if (v && !prov.includes(v)) setProv([...prov, v]) }} aria-label="เลือกจังหวัด">
+                <option value="">— เลือกจังหวัด (เลือกได้หลายจังหวัด) —</option>{PROVINCES.filter((x) => !prov.includes(x)).map((x) => <option key={x} value={x}>{x}</option>)}
+              </select>
+              <div className="flex gap-2"><input className="input" placeholder="หรือพิมพ์เขต/อำเภอ/พื้นที่ แล้วกด เพิ่ม" value={areaText} onChange={(e) => setAreaText(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addArea() } }} maxLength={100} /><button type="button" className="btn-ghost" onClick={addArea}>เพิ่ม</button></div>
+            </div>
+            {!!prov.length && <div className="mt-2 flex flex-wrap gap-2">{prov.map((x) => <button type="button" key={x} onClick={() => setProv(prov.filter((y) => y !== x))} className="rounded-full bg-brand-soft px-3 py-1 text-sm text-brand-dark">{x} ✕</button>)}</div>}
           </div>
-          <div className="sm:col-span-2"><Field label="กลุ่มเป้าหมาย (Target Audience)" hint="เช่น เพศ ไลฟ์สไตล์ ความสนใจ อาชีพ"><textarea className="input" rows={3} maxLength={3000} value={f.target_audience ?? ''} onChange={set('target_audience')} /></Field></div>
-          <div className="sm:col-span-2"><Field label="วัตถุประสงค์การยิงโฆษณา"><select className="input" value={f.ad_objective ?? ''} onChange={set('ad_objective')}><option value="">— เลือก —</option>{OBJECTIVES.map((o) => <option key={o}>{o}</option>)}</select></Field></div>
-          <div className="sm:col-span-2"><Field label="สินค้าหรือบริการที่ต้องการโปรโมต"><textarea className="input" rows={2} maxLength={3000} value={f.promote_items ?? ''} onChange={set('promote_items')} /></Field></div>
-          <div className="sm:col-span-2"><Field label="โปรโมชั่นปัจจุบัน"><textarea className="input" rows={2} maxLength={3000} value={f.current_promotion ?? ''} onChange={set('current_promotion')} /></Field></div>
-          <div className="sm:col-span-2"><Field label="ลิงก์เว็บไซต์หรือ LINE สำหรับติดต่อ" error={err.contact_link}><input className="input" value={f.contact_link ?? ''} onChange={set('contact_link')} maxLength={500} /></Field></div>
-          <div className="sm:col-span-2"><Field label="รูปภาพหรือวิดีโอประกอบ" hint="รูปภาพ, วิดีโอ MP4/MOV หรือ PDF · ไม่เกิน 10 ไฟล์ · ไฟล์ละไม่เกิน 20 MB" error={err.files}>
-            <input type="file" multiple accept={ALLOWED.join(',')} className="input" onChange={(e) => setFiles(Array.from(e.target.files ?? []))} /></Field>
-            {!!files.length && <p className="mt-1 text-xs text-slate-500">เลือกแล้ว {files.length} ไฟล์</p>}</div>
-          <div className="sm:col-span-2"><Field label="รายละเอียดเพิ่มเติม"><textarea className="input" rows={3} maxLength={5000} value={f.extra_details ?? ''} onChange={set('extra_details')} /></Field></div>
+          <div className="sm:col-span-2"><Field label="4. Target เป็นกลุ่มคนไหน" hint="ข้อมูลเบื้องต้นก็เพียงพอ ทีมงานจะช่วยวิเคราะห์และหากลุ่มเป้าหมายให้"><textarea className="input" rows={3} maxLength={3000} value={f.target_audience ?? ''} onChange={set('target_audience')} /></Field></div>
         </section>
+
+        <section className="card grid gap-4 sm:grid-cols-2">
+          <h2 className="font-semibold text-brand-dark sm:col-span-2">ข้อมูลติดต่อ</h2>
+          <div className="sm:col-span-2"><Field label="ชื่อธุรกิจ *" error={err.business_name}><input className="input" value={f.business_name ?? ''} onChange={set('business_name')} maxLength={200} /></Field></div>
+          <Field label="ชื่อผู้ติดต่อ *" error={err.contact_name}><input className="input" value={f.contact_name ?? ''} onChange={set('contact_name')} maxLength={200} /></Field>
+          <Field label="เบอร์โทรศัพท์ *" error={err.phone}><input className="input" inputMode="tel" value={f.phone ?? ''} onChange={set('phone')} /></Field>
+          <div className="sm:col-span-2"><Field label="LINE ID"><input className="input" value={f.line_id ?? ''} onChange={set('line_id')} maxLength={100} /></Field></div>
+        </section>
+
+        <details className="card" open={moreOpen} onToggle={(e) => setMoreOpen((e.target as HTMLDetailsElement).open)}>
+          <summary className="cursor-pointer font-semibold text-brand-dark">ข้อมูลเพิ่มเติม (ไม่บังคับ — ช่วยให้ทีมงานวางแผนได้แม่นยำขึ้น)</summary>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div className="sm:col-span-2"><Field label="ลิงก์ Facebook Page" error={err.fb_page_url}><input className="input" inputMode="url" placeholder="https://" value={f.fb_page_url ?? ''} onChange={set('fb_page_url')} /></Field></div>
+            <div className="sm:col-span-2"><Field label="ลิงก์ Instagram" error={err.instagram_url}><input className="input" inputMode="url" placeholder="https://" value={f.instagram_url ?? ''} onChange={set('instagram_url')} /></Field></div>
+            <div className="sm:col-span-2"><Field label="ประเภทสินค้าและบริการ"><input className="input" value={f.product_category ?? ''} onChange={set('product_category')} maxLength={500} /></Field></div>
+            <div className="sm:col-span-2"><Field label="วัตถุประสงค์การยิงโฆษณา"><select className="input" value={f.ad_objective ?? ''} onChange={set('ad_objective')}><option value="">— เลือก —</option>{OBJECTIVES.map((o) => <option key={o}>{o}</option>)}</select></Field></div>
+            <div className="sm:col-span-2"><Field label="สินค้าหรือบริการที่ต้องการโปรโมต"><textarea className="input" rows={2} maxLength={3000} value={f.promote_items ?? ''} onChange={set('promote_items')} /></Field></div>
+            <div className="sm:col-span-2"><Field label="โปรโมชั่นปัจจุบัน"><textarea className="input" rows={2} maxLength={3000} value={f.current_promotion ?? ''} onChange={set('current_promotion')} /></Field></div>
+            <div className="sm:col-span-2"><Field label="ลิงก์เว็บไซต์หรือ LINE สำหรับติดต่อ" error={err.contact_link}><input className="input" value={f.contact_link ?? ''} onChange={set('contact_link')} maxLength={500} /></Field></div>
+            <div className="sm:col-span-2"><Field label="รูปภาพหรือวิดีโอประกอบ" hint="รูปภาพ, วิดีโอ MP4/MOV หรือ PDF · ไม่เกิน 10 ไฟล์ · ไฟล์ละไม่เกิน 20 MB" error={err.files}>
+              <input type="file" multiple accept={ALLOWED.join(',')} className="input" onChange={(e) => setFiles(Array.from(e.target.files ?? []))} /></Field>
+              {!!files.length && <p className="mt-1 text-xs text-slate-500">เลือกแล้ว {files.length} ไฟล์</p>}</div>
+            <div className="sm:col-span-2"><Field label="รายละเอียดเพิ่มเติม"><textarea className="input" rows={3} maxLength={5000} value={f.extra_details ?? ''} onChange={set('extra_details')} /></Field></div>
+          </div>
+        </details>
 
         {/* honeypot: ซ่อนจากผู้ใช้จริง บอทมักกรอก */}
         <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden"><label>เว็บไซต์<input tabIndex={-1} autoComplete="off" value={f.website} onChange={set('website')} /></label></div>
