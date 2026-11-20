@@ -16,6 +16,14 @@ export function AuthShell({ title, children }: { title: string; children: React.
           )}
           {children}
         </div>
+        <details className="mt-4 rounded-xl border border-slate-200 bg-white/70 px-4 py-3 text-sm text-slate-700">
+          <summary className="cursor-pointer font-medium text-brand-dark">ติดตั้งเป็นแอปบนมือถือ</summary>
+          <div className="mt-2 space-y-1.5 text-xs leading-relaxed">
+            <p><b>iPhone (Safari):</b> กดปุ่มแชร์ → “เพิ่มลงในหน้าจอโฮม”</p>
+            <p><b>Android (Chrome):</b> กดเมนู ⋮ → “ติดตั้งแอป” หรือ “เพิ่มลงในหน้าจอหลัก”</p>
+            <p>จะได้ไอคอน ADS FAH เปิดแบบเต็มจอเหมือนแอป (ต้องมีอินเทอร์เน็ตเพื่อความปลอดภัยของข้อมูลลูกค้า)</p>
+          </div>
+        </details>
         <p className="mt-4 text-center text-xs text-slate-500">ระบบภายในสำหรับพนักงาน ADS FAH MARKETING Co., Ltd. เท่านั้น · <Link to="/privacy" className="underline">ประกาศความเป็นส่วนตัว</Link></p>
       </div>
     </div>
