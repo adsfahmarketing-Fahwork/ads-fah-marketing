@@ -16,14 +16,14 @@ import { SettingsPage } from './pages/Settings'
 import { PrivacyPage } from './pages/Privacy'
 import { PublicBriefPage } from './pages/PublicBrief'
 import { NAV } from './lib/roles'
-import { BASE_PATH } from './lib/basePath'
+import { BASE_PATH, HASH_ROUTER } from './lib/basePath'
 import { CustomersPage } from './pages/Customers'
 import { CustomerDetailPage } from './pages/CustomerDetail'
 import { PagesPage } from './pages/PagesPage'
 import { ContractsPage } from './pages/Contracts'
 
 // โหมดสาธิตโฮสต์ใน sub-path ของ GitHub Pages จึงใช้ HashRouter
-const Router = import.meta.env.VITE_DEMO === '1' ? HashRouter : BrowserRouter
+const Router = HASH_ROUTER ? HashRouter : BrowserRouter
 
 const SCREENS: Record<string, ReactElement> = {
   customers: <CustomersPage />, pages: <PagesPage />, contracts: <ContractsPage />,
@@ -32,7 +32,7 @@ const SCREENS: Record<string, ReactElement> = {
 
 export default function App() {
   return (
-    <Router basename={BASE_PATH || undefined}>
+    <Router {...(HASH_ROUTER ? {} : { basename: BASE_PATH || undefined })}>
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginPage />} />

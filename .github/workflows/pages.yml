@@ -48,7 +48,7 @@ jobs:
           cp -R dist-demo ../public/crm-demo
 
       # ระบบ CRM จริง (เชื่อม Supabase) เผยแพร่ที่ /crm/ — ใช้เฉพาะกุญแจแบบสาธารณะ (Publishable key) ที่ออกแบบให้อยู่ในเว็บได้
-      # ความปลอดภัยของข้อมูลอยู่ที่ Row Level Security ในฐานข้อมูล; 404.html ทำให้ลิงก์ตรงของ SPA ใช้งานได้บน GitHub Pages
+      # ความปลอดภัยของข้อมูลอยู่ที่ Row Level Security ในฐานข้อมูล; ใช้ลิงก์แบบ hash (/crm/#/...) เพราะ GitHub Pages ไม่รองรับ 404.html ใน sub-path
       - name: Build CRM live app (optional)
         if: steps.crm_deps.outcome == 'success'
         continue-on-error: true
@@ -56,9 +56,9 @@ jobs:
         env:
           VITE_SUPABASE_URL: https://vumkvfjoevwqaqsmoiyp.supabase.co
           VITE_SUPABASE_ANON_KEY: sb_publishable_ZFz6lFn_0CzP4wDUIjfmiQ_vsf_Evq8
+          VITE_HASH_ROUTER: '1'   # GitHub Pages ใน sub-path ไม่มี SPA fallback จึงใช้ลิงก์แบบ #/
         run: |
           npx vite build --base /ads-fah-marketing/crm/ --outDir dist-live
-          cp dist-live/index.html dist-live/404.html
           rm -rf ../public/crm
           cp -R dist-live ../public/crm
 
