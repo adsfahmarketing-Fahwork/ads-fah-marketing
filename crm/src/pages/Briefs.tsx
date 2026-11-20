@@ -11,10 +11,10 @@ type St = keyof typeof STATUS
 
 interface Brief {
   id: string; status: St; version: number; submitted_at: string; reviewed_at: string | null; internal_notes: string | null
-  business_name: string; contact_name: string; phone: string; line_id: string | null; fb_page_name: string | null; fb_page_url: string | null
+  business_name: string; contact_name: string | null; phone: string | null; line_id: string | null; fb_page_name: string | null; fb_page_url: string | null
   instagram_url: string | null; product_category: string | null; ad_budget_monthly: number | null; age_min: number | null; age_max: number | null
   provinces: string[]; target_audience: string | null; ad_objective: string | null; promote_items: string | null; current_promotion: string | null
-  contact_link: string | null; extra_details: string | null; customers: { business_name: string } | null; pages: { page_name: string } | null
+  contact_link: string | null; extra_details: string | null; customers: { business_name: string; contact_name: string | null; phone: string | null } | null; pages: { page_name: string } | null
 }
 
 function Row({ k, v }: { k: string; v: React.ReactNode }) {
@@ -39,7 +39,7 @@ function BriefDetail({ b, onClose, onChanged }: { b: Brief; onClose: () => void;
       <div className="mb-3 flex flex-wrap items-center gap-2 text-sm"><Badge tone={TONE[b.status]}>{STATUS[b.status]}</Badge><span className="text-slate-500">ส่งเมื่อ {formatThaiDate(b.submitted_at)} · ครั้งที่ {b.version}{b.reviewed_at && ` · ตรวจสอบเมื่อ ${formatThaiDate(b.reviewed_at)}`}</span></div>
       <h3 className="mt-2 font-semibold text-brand-dark">ข้อมูลธุรกิจ</h3>
       <dl className="divide-y divide-slate-100">
-        <Row k="ชื่อธุรกิจ" v={b.business_name} /><Row k="ผู้ติดต่อ" v={b.contact_name} /><Row k="เบอร์โทร" v={b.phone} /><Row k="LINE ID" v={b.line_id} />
+        <Row k="ชื่อธุรกิจ" v={b.business_name} /><Row k="ผู้ติดต่อ" v={b.contact_name ?? (b.customers?.contact_name ? `${b.customers.contact_name} (จากข้อมูลลูกค้า)` : null)} /><Row k="เบอร์โทร" v={b.phone ?? (b.customers?.phone ? `${b.customers.phone} (จากข้อมูลลูกค้า)` : null)} /><Row k="LINE ID" v={b.line_id} />
         <Row k="Facebook Page" v={<>{b.fb_page_name} {link(b.fb_page_url)}</>} /><Row k="Instagram" v={link(b.instagram_url)} /><Row k="ประเภทสินค้า/บริการ" v={b.product_category} />
       </dl>
       <h3 className="mt-4 font-semibold text-brand-dark">ข้อมูลสำหรับยิงโฆษณา</h3>
@@ -67,7 +67,7 @@ export function BriefsPage() {
   const [status, setStatus] = useState('')
   const [open, setOpen] = useState<Brief | null>(null)
   const { data, loading, error, reload } = useAsync(async () => {
-    let q = supabase.from('customer_briefs').select('*, customers(business_name), pages(page_name)').order('submitted_at', { ascending: false }).limit(300)
+    let q = supabase.from('customer_briefs').select('*, customers(business_name, contact_name, phone), pages(page_name)').order('submitted_at', { ascending: false }).limit(300)
     if (status) q = q.eq('status', status)
     const { data, error } = await q
     if (error) throw error
@@ -85,7 +85,7 @@ export function BriefsPage() {
             <tbody>{data.map((b) => (
               <tr key={b.id} className="cursor-pointer border-t border-slate-100 hover:bg-slate-50" onClick={() => setOpen(b)}>
                 <td className="p-3"><button className="font-medium text-brand-dark hover:underline">{b.customers?.business_name ?? b.business_name}</button><div className="text-xs text-slate-500">{b.pages?.page_name ?? '—'}</div></td>
-                <td className="p-3">{b.contact_name}<div className="text-xs text-slate-500">{b.phone}</div></td><td className="p-3">{formatThaiDate(b.submitted_at)}</td><td className="p-3">{b.version}</td>
+                <td className="p-3">{b.contact_name ?? b.customers?.contact_name ?? '—'}<div className="text-xs text-slate-500">{b.phone ?? b.customers?.phone ?? ''}</div></td><td className="p-3">{formatThaiDate(b.submitted_at)}</td><td className="p-3">{b.version}</td>
                 <td className="p-3"><Badge tone={TONE[b.status]}>{STATUS[b.status]}</Badge></td></tr>))}</tbody>
           </table>
         </div>)}

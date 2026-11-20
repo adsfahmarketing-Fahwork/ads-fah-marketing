@@ -66,9 +66,7 @@ export function PublicBriefPage() {
 
   function validate() {
     const e: Record<string, string> = {}
-    if (!f.business_name?.trim()) e.business_name = 'กรุณากรอกชื่อธุรกิจ'
-    if (!f.contact_name?.trim()) e.contact_name = 'กรุณากรอกชื่อผู้ติดต่อ'
-    if (!f.phone?.trim() || !PHONE_RE.test(f.phone.trim())) e.phone = 'กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง'
+    if (f.phone?.trim() && !PHONE_RE.test(f.phone.trim())) e.phone = 'กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง'
     for (const k of ['fb_page_url', 'instagram_url']) if (f[k]?.trim() && !URL_RE.test(f[k].trim())) e[k] = 'ลิงก์ต้องขึ้นต้นด้วย http:// หรือ https://'
     if (f.contact_link?.trim() && !/^(https?:\/\/|@|[0-9+\-\s()]{6,20}$)/i.test(f.contact_link.trim())) e.contact_link = 'กรอกเป็นลิงก์เว็บไซต์/LINE หรือเบอร์โทร'
     if (f.ad_budget_monthly && !(Number(f.ad_budget_monthly) >= 0)) e.ad_budget_monthly = 'กรุณากรอกตัวเลข'
@@ -78,7 +76,7 @@ export function PublicBriefPage() {
     if (!consent) e.consent = 'กรุณารับทราบประกาศความเป็นส่วนตัวก่อนส่งข้อมูล'
     if (files.length > 10) e.files = 'แนบไฟล์ได้ไม่เกิน 10 ไฟล์'
     for (const x of files) { if (!ALLOWED.includes(x.type)) e.files = `ไฟล์ ${x.name} ไม่รองรับ (รองรับรูปภาพ วิดีโอ MP4/MOV และ PDF)`; else if (x.size > MAX_FILE) e.files = `ไฟล์ ${x.name} ใหญ่เกิน 20 MB` }
-    if (['fb_page_url', 'instagram_url', 'contact_link', 'files'].some((k) => e[k])) setMoreOpen(true)
+    if (['fb_page_url', 'instagram_url', 'contact_link', 'files', 'phone'].some((k) => e[k])) setMoreOpen(true)
     setErr(e); return !Object.keys(e).length
   }
 
@@ -110,7 +108,7 @@ export function PublicBriefPage() {
     <Shell>
       <form onSubmit={submit} className="space-y-6" noValidate>
         <div className="card">
-          <h1 className="text-xl font-bold">ขอข้อมูลเพื่อ Record รายละเอียด</h1>
+          <h1 className="text-xl font-bold">ขอข้อมูลเพื่อ Record รายละเอียดค่ะ</h1>
           <p className="mb-3 font-medium text-brand-dark">(ดูแลเพจ 30 วัน)</p>
           <p className="text-sm leading-relaxed text-slate-700">ขอทราบข้อมูลเบื้องต้นไว้นะคะ นอกนั้นเดี๋ยวเป็นหน้าที่ของทางทีมฟ้านำส่งโฆษณา หากลุ่มเป้าหมายให้เองค่ะ</p>
           <div className="mt-3"><Alert kind="info">🔒 กรุณา<b>อย่ากรอกรหัสผ่าน Facebook หรือ Access Token</b> ในแบบฟอร์มนี้ ทีมงานจะไม่ขอข้อมูลดังกล่าวผ่านแบบฟอร์ม</Alert></div>
@@ -118,13 +116,13 @@ export function PublicBriefPage() {
 
         <section className="card grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2"><h2 className="font-semibold text-brand-dark">📍 ข้อมูลสำหรับยิง Ads</h2><p className="text-sm text-slate-500">“สำหรับยิงแอดโฆษณา”</p></div>
-          <div className="sm:col-span-2"><Field label="Page"><input className="input" value={f.fb_page_name ?? ''} onChange={set('fb_page_name')} maxLength={200} /></Field></div>
-          <Field label="1. งบประมาณต่อเดือน (บาท)" error={err.ad_budget_monthly}><input className="input" inputMode="decimal" value={f.ad_budget_monthly ?? ''} onChange={set('ad_budget_monthly')} /></Field>
-          <Field label="2. ช่วงอายุของลูกค้า (ปี)" error={err.age}>
+          <div className="sm:col-span-2"><Field label="Page :"><input className="input" value={f.fb_page_name ?? ''} onChange={set('fb_page_name')} maxLength={200} /></Field></div>
+          <Field label="1. งบประมาณต่อเดือน" error={err.ad_budget_monthly}><input className="input" inputMode="decimal" value={f.ad_budget_monthly ?? ''} onChange={set('ad_budget_monthly')} /></Field>
+          <Field label="2.ช่วงอายุของลูกค้า" error={err.age}>
             <div className="flex items-center gap-2"><input className="input" inputMode="numeric" placeholder="จาก" value={f.age_min ?? ''} onChange={set('age_min')} /><span>–</span><input className="input" inputMode="numeric" placeholder="ถึง" value={f.age_max ?? ''} onChange={set('age_max')} /></div>
           </Field>
           <div className="sm:col-span-2">
-            <span className="label">3. บริเวณ / เขตพื้นที่ที่ต้องการยิง</span>
+            <span className="label">3.บริเวณ เขตพื้นที่ต้องการที่จะยิง</span>
             <div className="grid gap-2 sm:grid-cols-2">
               <select className="input" value="" onChange={(e) => { const v = e.target.value; if (v && !prov.includes(v)) setProv([...prov, v]) }} aria-label="เลือกจังหวัด">
                 <option value="">— เลือกจังหวัด (เลือกได้หลายจังหวัด) —</option>{PROVINCES.filter((x) => !prov.includes(x)).map((x) => <option key={x} value={x}>{x}</option>)}
@@ -133,20 +131,16 @@ export function PublicBriefPage() {
             </div>
             {!!prov.length && <div className="mt-2 flex flex-wrap gap-2">{prov.map((x) => <button type="button" key={x} onClick={() => setProv(prov.filter((y) => y !== x))} className="rounded-full bg-brand-soft px-3 py-1 text-sm text-brand-dark">{x} ✕</button>)}</div>}
           </div>
-          <div className="sm:col-span-2"><Field label="4. Target เป็นกลุ่มคนไหน" hint="ข้อมูลเบื้องต้นก็เพียงพอ ทีมงานจะช่วยวิเคราะห์และหากลุ่มเป้าหมายให้"><textarea className="input" rows={3} maxLength={3000} value={f.target_audience ?? ''} onChange={set('target_audience')} /></Field></div>
-        </section>
-
-        <section className="card grid gap-4 sm:grid-cols-2">
-          <h2 className="font-semibold text-brand-dark sm:col-span-2">ข้อมูลติดต่อ</h2>
-          <div className="sm:col-span-2"><Field label="ชื่อธุรกิจ *" error={err.business_name}><input className="input" value={f.business_name ?? ''} onChange={set('business_name')} maxLength={200} /></Field></div>
-          <Field label="ชื่อผู้ติดต่อ *" error={err.contact_name}><input className="input" value={f.contact_name ?? ''} onChange={set('contact_name')} maxLength={200} /></Field>
-          <Field label="เบอร์โทรศัพท์ *" error={err.phone}><input className="input" inputMode="tel" value={f.phone ?? ''} onChange={set('phone')} /></Field>
-          <div className="sm:col-span-2"><Field label="LINE ID"><input className="input" value={f.line_id ?? ''} onChange={set('line_id')} maxLength={100} /></Field></div>
+          <div className="sm:col-span-2"><Field label="4. Target เป็นกลุ่มคนไหน" hint="ขอทราบข้อมูลเบื้องต้นไว้ก่อนนะคะ ทีมฟ้าจะช่วยหากลุ่มเป้าหมายให้เองค่ะ"><textarea className="input" rows={3} maxLength={3000} value={f.target_audience ?? ''} onChange={set('target_audience')} /></Field></div>
         </section>
 
         <details className="card" open={moreOpen} onToggle={(e) => setMoreOpen((e.target as HTMLDetailsElement).open)}>
-          <summary className="cursor-pointer font-semibold text-brand-dark">ข้อมูลเพิ่มเติม (ไม่บังคับ — ช่วยให้ทีมงานวางแผนได้แม่นยำขึ้น)</summary>
+          <summary className="cursor-pointer font-semibold text-brand-dark">ข้อมูลเพิ่มเติม (ไม่บังคับ)</summary>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
+    <div className="sm:col-span-2"><Field label="ชื่อธุรกิจ" error={err.business_name}><input className="input" value={f.business_name ?? ''} onChange={set('business_name')} maxLength={200} /></Field></div>
+              <Field label="ชื่อผู้ติดต่อ" error={err.contact_name}><input className="input" value={f.contact_name ?? ''} onChange={set('contact_name')} maxLength={200} /></Field>
+              <Field label="เบอร์โทรศัพท์" error={err.phone}><input className="input" inputMode="tel" value={f.phone ?? ''} onChange={set('phone')} /></Field>
+              <div className="sm:col-span-2"><Field label="LINE ID"><input className="input" value={f.line_id ?? ''} onChange={set('line_id')} maxLength={100} /></Field></div>
             <div className="sm:col-span-2"><Field label="ลิงก์ Facebook Page" error={err.fb_page_url}><input className="input" inputMode="url" placeholder="https://" value={f.fb_page_url ?? ''} onChange={set('fb_page_url')} /></Field></div>
             <div className="sm:col-span-2"><Field label="ลิงก์ Instagram" error={err.instagram_url}><input className="input" inputMode="url" placeholder="https://" value={f.instagram_url ?? ''} onChange={set('instagram_url')} /></Field></div>
             <div className="sm:col-span-2"><Field label="ประเภทสินค้าและบริการ"><input className="input" value={f.product_category ?? ''} onChange={set('product_category')} maxLength={500} /></Field></div>

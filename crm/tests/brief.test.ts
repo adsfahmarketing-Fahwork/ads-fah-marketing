@@ -111,8 +111,6 @@ describe('ส่ง Brief (public)', () => {
   })
   it('ตรวจข้อมูล: บังคับกรอก, เบอร์โทร, URL, อายุ, งบ, ความยาว', async () => {
     const a = await link('owner', pageA, 14, 50)
-    await expect(submit(a.token, payload({ business_name: '  ' }))).rejects.toThrow(/ชื่อธุรกิจ/)
-    await expect(submit(a.token, payload({ contact_name: '' }))).rejects.toThrow(/ผู้ติดต่อ/)
     await expect(submit(a.token, payload({ phone: 'abc' }))).rejects.toThrow(/เบอร์โทร/)
     await expect(submit(a.token, payload({ fb_page_url: 'javascript:alert(1)' }))).rejects.toThrow(/http/)
     await expect(submit(a.token, payload({ age_min: '60', age_max: '20' }))).rejects.toThrow(/ช่วงอายุ/)
@@ -155,6 +153,21 @@ describe('ส่ง Brief (public)', () => {
     await t.as('owner', `update brief_links set revoked_at=now() where id=$1`, [a.link_id])
     expect((await t.as('anon', `select brief_link_open($1) ok`, [a.link_id]))[0].ok).toBe(false)
     await expect(ins(`links/${a.link_id}/late.png`)).rejects.toThrow()
+  })
+})
+
+describe('ตอบเฉพาะข้อมูลสำหรับยิง Ads (4 ข้อ)', () => {
+  it('ส่งได้โดยไม่กรอกชื่อธุรกิจ/ผู้ติดต่อ/เบอร์ — ใช้ชื่อธุรกิจจากข้อมูลลูกค้า', async () => {
+    const a = await link()
+    const core = JSON.stringify({ fb_page_name: 'เพจเอ', ad_budget_monthly: '12000', age_min: '25', age_max: '40', provinces: ['กรุงเทพมหานคร', 'เขตบางนา'], target_audience: 'คนรักสุขภาพ', consent: true })
+    const id = (await submit(a.token, core))[0].r.id
+    const b = (await t.as('owner', `select business_name, contact_name, phone, age_min, provinces from customer_briefs where id=$1`, [id]))[0]
+    expect(b).toMatchObject({ business_name: '[ทดสอบ] ลูกค้า', contact_name: null, phone: null, age_min: 25 })
+    expect(b.provinces).toContain('เขตบางนา')
+  })
+  it('ถ้ากรอกเบอร์โทรต้องถูกรูปแบบ', async () => {
+    const a = await link()
+    await expect(submit(a.token, JSON.stringify({ phone: 'abc', consent: true }))).rejects.toThrow(/เบอร์โทร/)
   })
 })
 
