@@ -28,7 +28,7 @@ describe('การตั้งค่าความปลอดภัยขอ�
     const rows = await t.as('admin', `select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace
       where n.nspname = 'public' and has_function_privilege('authenticated', p.oid, 'execute') order by 1`)
     const allowed = ['anonymize_customer', 'app_role', 'bangkok_today', 'brief_link_open', 'can_access_contract', 'can_access_customer', 'can_access_entity', 'can_access_page', 'can_access_task',
-      'can_read_storage_object', 'can_view_revenue', 'create_brief_link', 'create_contract', 'dashboard_summary', 'get_brief_link_info', 'is_assigned_to_page', 'is_management', 'is_owner', 'is_staff',
+      'can_read_storage_object', 'can_view_revenue', 'create_brief_link', 'create_contract', 'create_general_brief_link', 'create_general_brief_link', 'dashboard_summary', 'get_brief_link_info', 'is_assigned_to_page', 'is_management', 'is_owner', 'is_staff',
       'refresh_contract_statuses', 'renew_contract', 'report_data', 'run_daily_jobs', 'set_page_assignments', 'submit_brief', 'task_status_label']
     expect(rows.map((r: any) => r.proname).filter((n: string) => !allowed.includes(n))).toEqual([])
     await expect(t.as('adminA', `select notify($1, 'page_assigned', 'ปลอม', null, null, null)`, [t.ids.adminB])).rejects.toThrow()

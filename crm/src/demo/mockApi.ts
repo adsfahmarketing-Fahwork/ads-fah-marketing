@@ -167,7 +167,11 @@ export async function handleDemo(req: Request, T = todayBangkok()): Promise<Resp
 
   if (p.startsWith('/rest/v1/rpc/')) {
     const fn = p.slice('/rest/v1/rpc/'.length)
-    if (fn === 'get_brief_link_info') return J({ valid: true, link_id: '11111111-1111-1111-1111-111111111111', business_name: 'ฟิตเนส พลัสแอคทีฟ' + tag, page_name: 'Plus Active Fitness' + tag })
+    if (fn === 'get_brief_link_info') {
+      const general = String(((await req.clone().json().catch(() => ({}))) as { p_token?: string }).p_token ?? '').includes('general')
+      return J(general ? { valid: true, link_id: '22222222-2222-2222-2222-222222222222', general: true, business_name: null, page_name: null }
+        : { valid: true, link_id: '11111111-1111-1111-1111-111111111111', general: false, business_name: 'ฟิตเนส พลัสแอคทีฟ' + tag, page_name: 'Plus Active Fitness' + tag })
+    }
     if (fn === 'submit_brief') return J({ ok: true, id: 'demo' })
     if (!S.me) return fail('กรุณาเข้าสู่ระบบ', '42501', 401)
     if (fn === 'dashboard_summary') return J(S.summary)

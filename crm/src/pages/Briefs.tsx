@@ -10,7 +10,7 @@ const TONE = { new: 'bg-amber-50 text-amber-700', in_review: 'bg-brand-soft text
 type St = keyof typeof STATUS
 
 interface Brief {
-  id: string; status: St; version: number; submitted_at: string; reviewed_at: string | null; internal_notes: string | null
+  id: string; customer_id: string | null; page_id: string | null; status: St; version: number; submitted_at: string; reviewed_at: string | null; internal_notes: string | null
   business_name: string; contact_name: string | null; phone: string | null; line_id: string | null; fb_page_name: string | null; fb_page_url: string | null
   instagram_url: string | null; product_category: string | null; ad_budget_monthly: number | null; age_min: number | null; age_max: number | null
   provinces: string[]; target_audience: string | null; ad_objective: string | null; promote_items: string | null; current_promotion: string | null
@@ -22,8 +22,56 @@ function Row({ k, v }: { k: string; v: React.ReactNode }) {
 }
 const link = (u: string | null) => u && /^https?:\/\//i.test(u) ? <a className="text-brand-dark hover:underline" href={u} target="_blank" rel="noopener noreferrer">{u}</a> : u
 
+function MatchPanel({ b, onDone }: { b: Brief; onDone: () => void }) {
+  const lists = useAsync(async () => {
+    const [c, p] = await Promise.all([
+      supabase.from('customers').select('id, business_name').order('business_name'),
+      supabase.from('pages').select('id, page_name, customer_id').order('page_name'),
+    ])
+    return { customers: c.data ?? [], pages: p.data ?? [] }
+  }, [])
+  const [cid, setCid] = useState('')
+  const [pid, setPid] = useState('')
+  const [err, setErr] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+  const pages = (lists.data?.pages ?? []).filter((p) => p.customer_id === cid)
+
+  async function match() {
+    if (!cid || !pid) return setErr('กรุณาเลือกลูกค้าและเพจ')
+    setBusy(true); setErr(null)
+    const { error } = await supabase.from('customer_briefs').update({ customer_id: cid, page_id: pid }).eq('id', b.id)
+    setBusy(false); if (error) setErr(dbError(error)); else onDone()
+  }
+  async function createNew() {
+    setBusy(true); setErr(null)
+    const n = (v: string | null) => (v && v.trim() ? v.trim() : null)
+    const { data: c, error: e1 } = await supabase.from('customers').insert({ business_name: b.business_name, contact_name: n(b.contact_name), phone: n(b.phone), line_id: n(b.line_id), business_type: n(b.product_category) }).select('id').single()
+    if (e1 || !c) { setBusy(false); return setErr(dbError(e1)) }
+    const { data: p, error: e2 } = await supabase.from('pages').insert({ customer_id: c.id, page_name: n(b.fb_page_name) ?? b.business_name, page_url: n(b.fb_page_url) && /^https?:\/\//i.test(b.fb_page_url as string) ? b.fb_page_url : null, instagram_url: n(b.instagram_url) && /^https?:\/\//i.test(b.instagram_url as string) ? b.instagram_url : null }).select('id').single()
+    if (e2 || !p) { setBusy(false); return setErr(dbError(e2)) }
+    const { error: e3 } = await supabase.from('customer_briefs').update({ customer_id: c.id, page_id: p.id }).eq('id', b.id)
+    setBusy(false); if (e3) setErr(dbError(e3)); else onDone()
+  }
+  return (
+    <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4">
+      <h3 className="font-semibold text-amber-800">Brief นี้ยังไม่จับคู่กับลูกค้า/เพจ</h3>
+      <p className="mb-3 text-sm text-amber-800">ส่งมาจากลิงก์กลาง จับคู่แล้วพนักงานที่ดูแลเพจจะเห็นและได้รับ Brief นี้</p>
+      <div className="grid gap-2 sm:grid-cols-2">
+        <select className="input" value={cid} onChange={(e) => { setCid(e.target.value); setPid('') }} aria-label="ลูกค้า"><option value="">— เลือกลูกค้าที่มีอยู่ —</option>{lists.data?.customers.map((c) => <option key={c.id} value={c.id}>{c.business_name}</option>)}</select>
+        <select className="input" value={pid} onChange={(e) => setPid(e.target.value)} disabled={!cid} aria-label="เพจ"><option value="">— เลือกเพจ —</option>{pages.map((p) => <option key={p.id} value={p.id}>{p.page_name}</option>)}</select>
+      </div>
+      {err && <div className="mt-2"><Alert>{err}</Alert></div>}
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button className="btn-primary" disabled={busy} onClick={match}>จับคู่</button>
+        <button className="btn-ghost" disabled={busy} onClick={createNew}>สร้างลูกค้าใหม่จาก Brief นี้</button>
+      </div>
+    </div>
+  )
+}
+
 function BriefDetail({ b, onClose, onChanged }: { b: Brief; onClose: () => void; onChanged: () => void }) {
   const [notes, setNotes] = useState(b.internal_notes ?? '')
+  const { profile } = useAuth()
   const [err, setErr] = useState<string | null>(null)
   const files = useAsync(async () => {
     const { data } = await supabase.from('attachments').select('id, storage_path, file_name, mime_type, size_bytes').eq('entity_type', 'brief').eq('entity_id', b.id)
@@ -36,6 +84,7 @@ function BriefDetail({ b, onClose, onChanged }: { b: Brief; onClose: () => void;
   }
   return (
     <Modal title={`Brief: ${b.business_name}`} onClose={onClose} wide>
+      {!b.customer_id && (profile?.role === 'owner' || profile?.role === 'manager') && <MatchPanel b={b} onDone={onChanged} />}
       <div className="mb-3 flex flex-wrap items-center gap-2 text-sm"><Badge tone={TONE[b.status]}>{STATUS[b.status]}</Badge><span className="text-slate-500">ส่งเมื่อ {formatThaiDate(b.submitted_at)} · ครั้งที่ {b.version}{b.reviewed_at && ` · ตรวจสอบเมื่อ ${formatThaiDate(b.reviewed_at)}`}</span></div>
       <h3 className="mt-2 font-semibold text-brand-dark">ข้อมูลธุรกิจ</h3>
       <dl className="divide-y divide-slate-100">
@@ -84,7 +133,7 @@ export function BriefsPage() {
             <thead className="bg-brand-soft text-left text-xs text-slate-600"><tr><th className="p-3">ลูกค้า / เพจ</th><th className="p-3">ผู้ติดต่อ</th><th className="p-3">ส่งเมื่อ</th><th className="p-3">ครั้งที่</th><th className="p-3">สถานะ</th></tr></thead>
             <tbody>{data.map((b) => (
               <tr key={b.id} className="cursor-pointer border-t border-slate-100 hover:bg-slate-50" onClick={() => setOpen(b)}>
-                <td className="p-3"><button className="font-medium text-brand-dark hover:underline">{b.customers?.business_name ?? b.business_name}</button><div className="text-xs text-slate-500">{b.pages?.page_name ?? '—'}</div></td>
+                <td className="p-3"><button className="font-medium text-brand-dark hover:underline">{b.customers?.business_name ?? b.business_name}</button>{!b.customer_id && <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800">ยังไม่จับคู่</span>}<div className="text-xs text-slate-500">{b.pages?.page_name ?? '—'}</div></td>
                 <td className="p-3">{b.contact_name ?? b.customers?.contact_name ?? '—'}<div className="text-xs text-slate-500">{b.phone ?? b.customers?.phone ?? ''}</div></td><td className="p-3">{formatThaiDate(b.submitted_at)}</td><td className="p-3">{b.version}</td>
                 <td className="p-3"><Badge tone={TONE[b.status]}>{STATUS[b.status]}</Badge></td></tr>))}</tbody>
           </table>

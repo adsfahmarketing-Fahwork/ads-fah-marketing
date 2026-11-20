@@ -6,8 +6,8 @@ import { formatThaiDate } from '../lib/format'
 import { appUrl } from '../lib/basePath'
 
 interface LinkRow {
-  id: string; label: string | null; expires_at: string; revoked_at: string | null; max_submissions: number; submission_count: number
-  created_at: string; customers: { business_name: string }; pages: { page_name: string } | null
+  id: string; label: string | null; expires_at: string | null; revoked_at: string | null; max_submissions: number; submission_count: number
+  created_at: string; is_general: boolean; customers: { business_name: string } | null; pages: { page_name: string } | null
 }
 
 export const customerMessage = (url: string) =>
@@ -17,8 +17,8 @@ export const briefUrl = (token: string) => appUrl(`/brief/${token}`)
 
 function linkState(l: LinkRow, now = Date.now()) {
   if (l.revoked_at) return ['ยกเลิกแล้ว', 'bg-slate-200 text-slate-600'] as const
-  if (new Date(l.expires_at).getTime() <= now) return ['หมดอายุ', 'bg-red-50 text-red-700'] as const
-  if (l.submission_count >= l.max_submissions) return ['ใช้ครบแล้ว', 'bg-amber-50 text-amber-700'] as const
+  if (l.expires_at && new Date(l.expires_at).getTime() <= now) return ['หมดอายุ', 'bg-red-50 text-red-700'] as const
+  if (!l.is_general && l.submission_count >= l.max_submissions) return ['ใช้ครบแล้ว', 'bg-amber-50 text-amber-700'] as const
   return ['ใช้งานได้', 'bg-emerald-50 text-emerald-700'] as const
 }
 
@@ -27,7 +27,7 @@ export function BriefBuilderPage() {
     const [c, p, l] = await Promise.all([
       supabase.from('customers').select('id, business_name').order('business_name'),
       supabase.from('pages').select('id, page_name, customer_id').neq('status', 'ended').order('page_name'),
-      supabase.from('brief_links').select('id, label, expires_at, revoked_at, max_submissions, submission_count, created_at, customers(business_name), pages(page_name)').order('created_at', { ascending: false }).limit(200),
+      supabase.from('brief_links').select('id, label, expires_at, revoked_at, max_submissions, submission_count, created_at, is_general, customers(business_name), pages(page_name)').order('created_at', { ascending: false }).limit(200),
     ])
     return { customers: c.data ?? [], pages: p.data ?? [], links: (l.data ?? []) as unknown as LinkRow[] }
   }, [])
@@ -37,6 +37,8 @@ export function BriefBuilderPage() {
   const [created, setCreated] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const [copiedMsg, setCopiedMsg] = useState(false)
+  const [genLabel, setGenLabel] = useState('')
+  const [genBusy, setGenBusy] = useState(false)
   const custPages = (lists.data?.pages ?? []).filter((p) => p.customer_id === f.customer_id)
 
   async function submit(e: FormEvent) {
@@ -50,6 +52,13 @@ export function BriefBuilderPage() {
     setBusy(false)
     if (error || !data?.[0]) return setErr(dbError(error))
     setCreated(briefUrl(data[0].token)); setCopiedMsg(false); lists.reload()
+  }
+  async function createGeneral() {
+    setGenBusy(true); setErr(null); setCreated(null); setCopied(false); setCopiedMsg(false)
+    const { data, error } = await supabase.rpc('create_general_brief_link', { p_label: genLabel || null })
+    setGenBusy(false)
+    if (error || !data?.[0]) return setErr(dbError(error))
+    setCreated(briefUrl(data[0].token)); setGenLabel(''); lists.reload()
   }
   async function revoke(id: string) {
     if (!confirm('ยกเลิกลิงก์นี้? ลูกค้าจะเปิดฟอร์มไม่ได้อีก')) return
@@ -69,6 +78,15 @@ export function BriefBuilderPage() {
   return (
     <>
       <PageHeader title="สร้างลิงก์รับ Brief" subtitle="สร้างลิงก์เฉพาะลูกค้าแต่ละราย เพื่อให้ลูกค้ากรอกข้อมูลสำหรับวางแผนโฆษณาด้วยตนเอง" />
+      <section className="card mb-4 border-brand/40 bg-brand-soft/40">
+        <h2 className="font-semibold">ลิงก์กลาง — ใช้ได้ตลอด ใช้กับทุกลูกค้า</h2>
+        <p className="mb-3 mt-1 text-sm text-slate-600">ลิงก์เดียวส่งให้ลูกค้าได้ไม่จำกัดราย ไม่มีวันหมดอายุ ลูกค้าจะกรอกชื่อธุรกิจ/ผู้ติดต่อ/เบอร์เอง แล้ว Brief จะเข้ามาที่หน้า “Brief ลูกค้า” เป็น <b>“ยังไม่จับคู่”</b> ให้ทีมจับคู่กับลูกค้า/เพจภายหลัง (ยกเลิกลิงก์ได้ทันทีหากมีสแปม)</p>
+        <div className="flex flex-wrap gap-2">
+          <input className="input max-w-xs" placeholder="ชื่อเรียกลิงก์ เช่น ลิงก์ LINE OA" value={genLabel} onChange={(e) => setGenLabel(e.target.value)} maxLength={200} aria-label="ชื่อเรียกลิงก์กลาง" />
+          <button type="button" className="btn-primary" disabled={genBusy} onClick={createGeneral}>{genBusy ? 'กำลังสร้าง…' : 'สร้างลิงก์กลาง'}</button>
+        </div>
+      </section>
+
       <form onSubmit={submit} className="card mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" noValidate>
         <Field label="ลูกค้า *"><select className="input" value={f.customer_id} onChange={(e) => setF({ ...f, customer_id: e.target.value, page_id: '' })}><option value="">— เลือกลูกค้า —</option>{lists.data?.customers.map((c) => <option key={c.id} value={c.id}>{c.business_name}</option>)}</select></Field>
         <Field label="เพจ *"><select className="input" value={f.page_id} onChange={(e) => setF({ ...f, page_id: e.target.value })} disabled={!f.customer_id}><option value="">— เลือกเพจ —</option>{custPages.map((p) => <option key={p.id} value={p.id}>{p.page_name}</option>)}</select></Field>
@@ -94,9 +112,9 @@ export function BriefBuilderPage() {
             <tbody>
               {lists.data.links.map((l) => { const [txt, tone] = linkState(l); return (
                 <tr key={l.id} className="border-t border-slate-100">
-                  <td className="p-3"><div className="font-medium">{l.customers.business_name}</div><div className="text-xs text-slate-500">{l.pages?.page_name ?? '—'}</div></td>
-                  <td className="p-3">{l.label ?? '—'}</td><td className="p-3">{formatThaiDate(l.created_at)}</td><td className="p-3">{formatThaiDate(l.expires_at)}</td>
-                  <td className="p-3 text-center">{l.submission_count}/{l.max_submissions}</td><td className="p-3"><Badge tone={tone}>{txt}</Badge></td>
+                  <td className="p-3"><div className="font-medium">{l.is_general ? 'ลิงก์กลาง (ทุกลูกค้า)' : l.customers?.business_name}</div><div className="text-xs text-slate-500">{l.is_general ? 'ลูกค้ากรอกข้อมูลเอง' : (l.pages?.page_name ?? '—')}</div></td>
+                  <td className="p-3">{l.label ?? '—'}</td><td className="p-3">{formatThaiDate(l.created_at)}</td><td className="p-3">{l.expires_at ? formatThaiDate(l.expires_at) : 'ไม่หมดอายุ'}</td>
+                  <td className="p-3 text-center">{l.is_general ? l.submission_count : `${l.submission_count}/${l.max_submissions}`}</td><td className="p-3"><Badge tone={tone}>{txt}</Badge></td>
                   <td className="p-3 text-right">{txt === 'ใช้งานได้' && <button className="text-red-600 hover:underline" onClick={() => revoke(l.id)}>ยกเลิกลิงก์</button>}</td>
                 </tr>) })}
             </tbody>

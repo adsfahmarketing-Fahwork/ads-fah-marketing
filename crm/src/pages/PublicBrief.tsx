@@ -16,7 +16,7 @@ const REASONS: Record<string, string> = {
   used_up: 'ลิงก์นี้ถูกใช้ครบจำนวนครั้งที่กำหนดแล้ว กรุณาติดต่อทีมงานหากต้องการแก้ไขข้อมูล',
 }
 
-type Info = { valid: true; link_id: string; business_name: string | null; page_name: string | null } | { valid: false; reason: string }
+type Info = { valid: true; link_id: string; general?: boolean; business_name: string | null; page_name: string | null } | { valid: false; reason: string }
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
@@ -66,6 +66,11 @@ export function PublicBriefPage() {
 
   function validate() {
     const e: Record<string, string> = {}
+    if (info?.valid && info.general) {
+      if (!f.business_name?.trim()) e.business_name = 'กรุณากรอกชื่อธุรกิจ'
+      if (!f.contact_name?.trim()) e.contact_name = 'กรุณากรอกชื่อผู้ติดต่อ'
+      if (!f.phone?.trim()) e.phone = 'กรุณากรอกเบอร์โทรศัพท์'
+    }
     if (f.phone?.trim() && !PHONE_RE.test(f.phone.trim())) e.phone = 'กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง'
     for (const k of ['fb_page_url', 'instagram_url']) if (f[k]?.trim() && !URL_RE.test(f[k].trim())) e[k] = 'ลิงก์ต้องขึ้นต้นด้วย http:// หรือ https://'
     if (f.contact_link?.trim() && !/^(https?:\/\/|@|[0-9+\-\s()]{6,20}$)/i.test(f.contact_link.trim())) e.contact_link = 'กรอกเป็นลิงก์เว็บไซต์/LINE หรือเบอร์โทร'
@@ -98,6 +103,15 @@ export function PublicBriefPage() {
     setDone(true)
   }
 
+  const contactFields = (
+    <>
+      <div className="sm:col-span-2"><Field label={info.general ? 'ชื่อธุรกิจ *' : 'ชื่อธุรกิจ'} error={err.business_name}><input className="input" value={f.business_name ?? ''} onChange={set('business_name')} maxLength={200} /></Field></div>
+      <Field label={info.general ? 'ชื่อผู้ติดต่อ *' : 'ชื่อผู้ติดต่อ'} error={err.contact_name}><input className="input" value={f.contact_name ?? ''} onChange={set('contact_name')} maxLength={200} /></Field>
+      <Field label={info.general ? 'เบอร์โทรศัพท์ *' : 'เบอร์โทรศัพท์'} error={err.phone}><input className="input" inputMode="tel" value={f.phone ?? ''} onChange={set('phone')} /></Field>
+      <div className="sm:col-span-2"><Field label="LINE ID"><input className="input" value={f.line_id ?? ''} onChange={set('line_id')} maxLength={100} /></Field></div>
+    </>
+  )
+
   const addArea = () => {
     const v = areaText.trim().slice(0, 100)
     if (v && !prov.includes(v) && prov.length < 77) setProv([...prov, v])
@@ -113,6 +127,13 @@ export function PublicBriefPage() {
           <p className="text-sm leading-relaxed text-slate-700">ขอทราบข้อมูลเบื้องต้นไว้นะคะ นอกนั้นเดี๋ยวเป็นหน้าที่ของทางทีมฟ้านำส่งโฆษณา หากลุ่มเป้าหมายให้เองค่ะ</p>
           <div className="mt-3"><Alert kind="info">🔒 กรุณา<b>อย่ากรอกรหัสผ่าน Facebook หรือ Access Token</b> ในแบบฟอร์มนี้ ทีมงานจะไม่ขอข้อมูลดังกล่าวผ่านแบบฟอร์ม</Alert></div>
         </div>
+
+        {info.general && (
+          <section className="card grid gap-4 sm:grid-cols-2">
+            <h2 className="font-semibold text-brand-dark sm:col-span-2">ข้อมูลของท่าน</h2>
+            {contactFields}
+          </section>
+        )}
 
         <section className="card grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2"><h2 className="font-semibold text-brand-dark">📍 ข้อมูลสำหรับยิง Ads</h2><p className="text-sm text-slate-500">“สำหรับยิงแอดโฆษณา”</p></div>
@@ -137,10 +158,7 @@ export function PublicBriefPage() {
         <details className="card" open={moreOpen} onToggle={(e) => setMoreOpen((e.target as HTMLDetailsElement).open)}>
           <summary className="cursor-pointer font-semibold text-brand-dark">ข้อมูลเพิ่มเติม (ไม่บังคับ)</summary>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
-    <div className="sm:col-span-2"><Field label="ชื่อธุรกิจ" error={err.business_name}><input className="input" value={f.business_name ?? ''} onChange={set('business_name')} maxLength={200} /></Field></div>
-              <Field label="ชื่อผู้ติดต่อ" error={err.contact_name}><input className="input" value={f.contact_name ?? ''} onChange={set('contact_name')} maxLength={200} /></Field>
-              <Field label="เบอร์โทรศัพท์" error={err.phone}><input className="input" inputMode="tel" value={f.phone ?? ''} onChange={set('phone')} /></Field>
-              <div className="sm:col-span-2"><Field label="LINE ID"><input className="input" value={f.line_id ?? ''} onChange={set('line_id')} maxLength={100} /></Field></div>
+            {!info.general && contactFields}
             <div className="sm:col-span-2"><Field label="ลิงก์ Facebook Page" error={err.fb_page_url}><input className="input" inputMode="url" placeholder="https://" value={f.fb_page_url ?? ''} onChange={set('fb_page_url')} /></Field></div>
             <div className="sm:col-span-2"><Field label="ลิงก์ Instagram" error={err.instagram_url}><input className="input" inputMode="url" placeholder="https://" value={f.instagram_url ?? ''} onChange={set('instagram_url')} /></Field></div>
             <div className="sm:col-span-2"><Field label="ประเภทสินค้าและบริการ"><input className="input" value={f.product_category ?? ''} onChange={set('product_category')} maxLength={500} /></Field></div>
