@@ -7,7 +7,7 @@
 
   // Rich blocks (contain <br>, <strong>, <em>): normalized Thai innerHTML → English HTML
   const EN_HTML = {
-    'เปลี่ยนการยิงแอด<br><em>ให้เป็นการเติบโต</em><br>ของธุรกิจ': 'Turn your ads<br><em>into real growth</em><br>for your business',
+    'เปลี่ยนการยิงแอด<br><em>ให้เป็นการเติบโต</em><br>ของธุรกิจ': 'Smarter ads,<br><em>real growth</em><br>for your business',
     'สวัสดีค่ะ <strong>ครูฟ้า</strong> ผู้เชี่ยวชาญด้าน Facebook &amp; Instagram Ads สอนตั้งแต่พื้นฐานจนถึงการ Scale ยอดขาย ด้วยระบบโฆษณาที่อัปเดตล่าสุดในยุค AI ทั้งแบบตัวต่อตัว แบบกลุ่ม และอบรมองค์กร พร้อมรับบริหารโฆษณาให้ธุรกิจของคุณ':
       'Hi, I’m <strong>Kru Fah</strong>, a Facebook &amp; Instagram Ads specialist. I teach everything from the basics to scaling your sales with the latest AI-era ad system — one-on-one, in groups and as corporate training — and my team can also run your ads for you.',
     'สอนจากประสบการณ์จริง<br>ไม่ใช่แค่ทฤษฎี': 'Taught from real experience,<br>not just theory',
