@@ -4,6 +4,9 @@
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const LINE_URL = 'https://line.me/ti/p/~adsfahmarketing';
+  // Language helpers (i18n.js). T = translate a Thai string, L = pick Thai or English text
+  const T = (th) => (window.I18N ? window.I18N.t(th) : th);
+  const L = (th, en) => (window.I18N ? window.I18N.L(th, en) : th);
 
   $('#year').textContent = new Date().getFullYear();
 
@@ -58,8 +61,8 @@
   function fillCourseSelect() {
     const sel = $('#courseSelect');
     const current = sel.value;
-    sel.innerHTML = '<option value="">— เลือกคอร์ส —</option>' + courses.map((c) =>
-      `<option value="${esc(c.id)}">${esc(c.type)} · ${esc(c.name)}${c.price != null ? ` (${fmtPrice(c.price)} บาท)` : ''}</option>`).join('');
+    sel.innerHTML = `<option value="">${esc(T('— เลือกคอร์ส —'))}</option>` + courses.map((c) =>
+      `<option value="${esc(c.id)}">${esc(c.type)} · ${esc(T(c.name))}${c.price != null ? ` (${fmtPrice(c.price)} ${T('บาท')})` : ''}</option>`).join('');
     if (current) sel.value = current;
     updateDateHint();
   }
@@ -69,10 +72,11 @@
     const hint = $('#dateHint');
     if (c && c.dates && c.dates.length) {
       hint.hidden = false;
-      hint.textContent = 'รอบที่เปิดรับ: ' + c.dates.join(' · ');
+      hint.textContent = T('รอบที่เปิดรับ') + ': ' + c.dates.join(' · ');
     } else hint.hidden = true;
   }
   $('#courseSelect').addEventListener('change', updateDateHint);
+  document.addEventListener('langchange', () => { if (courses.length) fillCourseSelect(); });
 
   // ---------- Reviews ----------
   function renderReviews(list) {
@@ -82,7 +86,7 @@
       <article class="review reveal ${r.sample ? 'review--sample' : ''}">
         ${r.sample ? '<span class="review__sample">ตัวอย่าง</span>' : ''}
         ${r.source === 'facebook'
-          ? `<div class="review__fb"><span class="review__fbicon">f</span><span>รีวิวบน Facebook${r.date ? ` · <time>${esc(r.date)}</time>` : ''}</span></div>`
+          ? `<div class="review__fb"><span class="review__fbicon">f</span><span><span>รีวิวบน Facebook</span>${r.date ? ` · <time>${esc(r.date)}</time>` : ''}</span></div>`
           : `<div class="review__stars" aria-label="${r.rating} ดาว">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>`}
         <p class="review__text">${esc(r.text)}</p>
         ${r.result ? `<span class="review__result">${esc(r.result)}</span>` : ''}
@@ -166,7 +170,7 @@
       showSuccess(data);
     } catch (err) {
       msg.classList.add('is-err');
-      msg.innerHTML = `${esc(err.message === 'Failed to fetch' ? 'เชื่อมต่อระบบไม่ได้' : err.message)} — หรือทัก <a href="${LINE_URL}" target="_blank" rel="noopener"><b>LINE: adsfahmarketing</b></a> ได้ทันที`;
+      msg.innerHTML = `${esc(T(err.message === 'Failed to fetch' ? 'เชื่อมต่อระบบไม่ได้' : err.message))} — ${L('หรือทัก', 'or message')} <a href="${LINE_URL}" target="_blank" rel="noopener"><b>LINE: adsfahmarketing</b></a> ${L('ได้ทันที', 'right away')}`;
       btn.disabled = false; btn.textContent = label;
     }
   });
@@ -176,9 +180,9 @@
     card.innerHTML = `
       <div class="success">
         <div class="success__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
-        <h3>ได้รับข้อมูลแล้ว ขอบคุณค่ะ คุณ${esc(data.name)}</h3>
-        <p>ทีมงาน ADS FAH MARKETING จะติดต่อกลับที่เบอร์ ${esc(data.phone)} ภายใน 24 ชั่วโมง<br>ถ้าต้องการคำตอบเร็วขึ้น ทัก LINE ได้เลยค่ะ</p>
-        <a class="btn btn--primary" href="${LINE_URL}" target="_blank" rel="noopener">แชท LINE: adsfahmarketing</a>
+        <h3>${L(`ได้รับข้อมูลแล้ว ขอบคุณค่ะ คุณ${esc(data.name)}`, `Thank you, ${esc(data.name)}! We’ve received your details`)}</h3>
+        <p>${L(`ทีมงาน ADS FAH MARKETING จะติดต่อกลับที่เบอร์ ${esc(data.phone)} ภายใน 24 ชั่วโมง<br>ถ้าต้องการคำตอบเร็วขึ้น ทัก LINE ได้เลยค่ะ`, `The ADS FAH MARKETING team will call you at ${esc(data.phone)} within 24 hours.<br>For a faster reply, message us on LINE.`)}</p>
+        <a class="btn btn--primary" href="${LINE_URL}" target="_blank" rel="noopener">${L('แชท LINE', 'Chat on LINE')}: adsfahmarketing</a>
       </div>`;
     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
@@ -204,15 +208,15 @@
     card.innerHTML = `
       <div class="success">
         <div class="success__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg></div>
-        <h3>อีกขั้นเดียว คุณ${esc(data.name)}</h3>
-        <p>กดปุ่มด้านล่างเพื่อส่งข้อมูลถึงทีมงาน ADS FAH MARKETING</p>
+        <h3>${L(`อีกขั้นเดียว คุณ${esc(data.name)}`, `One more step, ${esc(data.name)}`)}</h3>
+        <p>${L('กดปุ่มด้านล่างเพื่อส่งข้อมูลถึงทีมงาน ADS FAH MARKETING', 'Choose how to send your details to the ADS FAH MARKETING team')}</p>
         <div class="manual-send">
-          <a class="btn btn--primary btn--block" href="${mailto}">ส่งทางอีเมล</a>
-          <button type="button" class="btn btn--dark btn--block" id="copyLine">คัดลอกข้อมูล แล้วเปิด LINE</button>
-          <a class="btn btn--ghost btn--block" href="tel:0618266465">โทร 061-826-6465</a>
+          <a class="btn btn--primary btn--block" href="${mailto}">${L('ส่งทางอีเมล', 'Send by email')}</a>
+          <button type="button" class="btn btn--dark btn--block" id="copyLine">${L('คัดลอกข้อมูล แล้วเปิด LINE', 'Copy details and open LINE')}</button>
+          <a class="btn btn--ghost btn--block" href="tel:0618266465">${L('โทร', 'Call')} 061-826-6465</a>
         </div>
-        <pre class="manual-send__text">${esc(lines)}</pre>
-        <p class="manual-send__hint" id="copyHint" hidden>คัดลอกแล้ว — วางข้อความในแชท LINE ได้เลยค่ะ</p>
+        <pre class="manual-send__text" data-no-i18n>${esc(lines)}</pre>
+        <p class="manual-send__hint" id="copyHint" hidden>${L('คัดลอกแล้ว — วางข้อความในแชท LINE ได้เลยค่ะ', 'Copied — paste it into the LINE chat')}</p>
       </div>`;
     $('#copyLine').addEventListener('click', async () => {
       try { await navigator.clipboard.writeText(lines); $('#copyHint').hidden = false; } catch { /* ignore */ }

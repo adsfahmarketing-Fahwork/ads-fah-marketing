@@ -527,3 +527,13 @@ img.brand__mark { width: 52px; height: auto; }
   .fab__btn { width: 46px; height: 46px; }
   .lightbox__nav { top: auto; bottom: 14px; transform: none; }
 }
+
+
+/* ---------- Language switch (TH / EN) ---------- */
+.lang-switch { display: inline-flex; padding: 3px; border: 1px solid var(--line); border-radius: 999px; background: var(--gray); }
+.lang-switch button { min-width: 38px; padding: 5px 10px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font: 600 13px/1.2 var(--font); letter-spacing: .04em; cursor: pointer; transition: background .2s, color .2s; }
+.lang-switch button:hover { color: var(--ink); }
+.lang-switch button.is-active { background: var(--cyan); color: var(--ink); }
+html:not([lang="en"]) [data-only-lang="en"] { display: none !important; }
+.reviews__note { max-width: 720px; margin: -28px auto 32px; text-align: center; font-size: 14px; color: var(--muted); }
+@media (max-width: 640px) { .lang-switch button { min-width: 34px; padding: 5px 8px; } }
