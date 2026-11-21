@@ -13,8 +13,8 @@
   <link rel="apple-touch-icon" href="images/logo-mark.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=10">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=20">
 </head>
 <body>
 
@@ -22,7 +22,7 @@
 <header class="nav" id="top">
   <div class="container nav__inner">
     <a href="#top" class="brand" aria-label="ADS FAH MARKETING หน้าแรก">
-      <img class="brand__mark" src="images/logo-mark-white.png" alt="" width="608" height="486">
+      <img class="brand__mark" src="images/logo-mark.png" alt="" width="608" height="486">
       <span class="brand__text"><b>ADS <span>FAH</span></b><small>MARKETING</small></span>
     </a>
     <nav class="nav__links" aria-label="เมนูหลัก">
@@ -35,7 +35,7 @@
       <a href="#contact">ติดต่อ</a>
     </nav>
     <div class="nav__cta">
-      <a href="#booking" class="btn btn--gold btn--sm" data-tab="enroll">สมัครเรียน</a>
+      <a href="#booking" class="btn btn--primary btn--sm" data-tab="enroll">สมัครเรียน</a>
       <button class="nav__toggle" aria-label="เปิดเมนู" aria-expanded="false"><span></span><span></span></button>
     </div>
   </div>
@@ -44,16 +44,15 @@
 <main>
 <!-- ============ HERO ============ -->
 <section class="hero">
-  <div class="hero__bg" aria-hidden="true"></div>
   <div class="container hero__grid">
     <div class="hero__copy">
-      <p class="eyebrow eyebrow--light"><span class="dot"></span> Meta Ads Specialist · Trainer · Agency</p>
+      <p class="eyebrow">Meta Ads Specialist · Trainer · Agency</p>
       <p class="hero__brand">ADS FAH MARKETING</p>
       <h1 class="hero__title">เปลี่ยนการยิงแอด<br><em>ให้เป็นการเติบโต</em><br>ของธุรกิจ</h1>
       <p class="hero__lead">สวัสดีค่ะ <strong>ครูฟ้า</strong> ผู้เชี่ยวชาญด้าน Facebook &amp; Instagram Ads สอนตั้งแต่พื้นฐานจนถึงการ Scale ยอดขาย ด้วยระบบโฆษณาที่อัปเดตล่าสุดในยุค AI ทั้งแบบตัวต่อตัว แบบกลุ่ม และอบรมองค์กร พร้อมรับบริหารโฆษณาให้ธุรกิจของคุณ</p>
       <div class="hero__actions">
-        <a href="#booking" class="btn btn--gold btn--lg" data-tab="enroll">สมัครเรียน <span aria-hidden="true">→</span></a>
-        <a href="#booking" class="btn btn--outline-light btn--lg" data-tab="consult">ปรึกษาการตลาด</a>
+        <a href="#booking" class="btn btn--primary btn--lg" data-tab="enroll">สมัครเรียน <span aria-hidden="true">→</span></a>
+        <a href="#booking" class="btn btn--outline btn--lg" data-tab="consult">ปรึกษาการตลาด</a>
       </div>
       <ul class="hero__trust">
         <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Meta Certified Media Buying Professional</li>
@@ -74,6 +73,15 @@
         <div class="float-card float-card--bottom">
           <small>Private Class 1:1</small>
           <b>9,900 <span>บาท</span></b>
+        </div>
+        <div class="float-card float-card--chart" aria-hidden="true">
+          <span class="chart__label">Facebook &amp; Instagram Ads</span>
+          <svg class="chart" viewBox="0 0 132 56">
+            <rect x="4" y="34" width="14" height="18" rx="3"/><rect x="26" y="26" width="14" height="26" rx="3"/>
+            <rect x="48" y="30" width="14" height="22" rx="3"/><rect x="70" y="18" width="14" height="34" rx="3"/>
+            <rect x="92" y="10" width="14" height="42" rx="3"/><rect x="114" y="4" width="14" height="48" rx="3"/>
+            <path class="chart__line" d="M6 30 L33 22 L55 26 L77 14 L99 8 L126 2"/>
+          </svg>
         </div>
         <span class="portrait__name">ครูฟ้า · Founder &amp; Meta Ads Trainer</span>
       </div>
@@ -112,7 +120,7 @@
         <li><span>03</span><div><b>ปลอดภัยตามนโยบาย</b><p>เขียนแอดให้ผ่านนโยบาย ลดความเสี่ยงบัญชีโดนแบน</p></div></li>
       </ul>
       <div class="about__actions">
-        <a href="#courses" class="btn btn--navy">ดูคอร์สเรียน</a>
+        <a href="#courses" class="btn btn--dark">ดูคอร์สเรียน</a>
         <a href="https://line.me/ti/p/~adsfahmarketing" target="_blank" rel="noopener" class="btn btn--ghost">ทัก LINE คุยกับครูฟ้า</a>
       </div>
     </div>
@@ -123,12 +131,12 @@
 <section class="section videos" id="videos">
   <div class="container videos__grid">
     <div class="videos__copy reveal">
-      <p class="eyebrow eyebrow--light">วิดีโอ</p>
+      <p class="eyebrow">วิดีโอ</p>
       <h2 class="h2">ทำความรู้จักครูฟ้าผ่านวิดีโอ</h2>
       <p class="lead">ฟังแนวคิด ประสบการณ์ และวิธีสอนของครูฟ้าก่อนตัดสินใจเรียน ติดตามคลิปใหม่ ๆ และเทคนิคยิงแอดได้ที่เพจ Ads Fah Marketing</p>
       <div class="videos__actions">
-        <a href="#booking" class="btn btn--gold" data-tab="enroll">สมัครเรียนกับครูฟ้า</a>
-        <a href="https://www.facebook.com/profile.php?id=100091208254093" target="_blank" rel="noopener" class="btn btn--outline-light">ติดตามเพจ Facebook</a>
+        <a href="#booking" class="btn btn--primary" data-tab="enroll">สมัครเรียนกับครูฟ้า</a>
+        <a href="https://www.facebook.com/profile.php?id=100091208254093" target="_blank" rel="noopener" class="btn btn--outline">ติดตามเพจ Facebook</a>
       </div>
     </div>
     <div class="videos__list">
@@ -186,8 +194,8 @@
 <!-- ============ SERVICES ============ -->
 <section class="section services" id="services">
   <div class="container">
-    <div class="section__head section__head--light reveal">
-      <p class="eyebrow eyebrow--light">บริการเอเจนซี</p>
+    <div class="section__head reveal">
+      <p class="eyebrow">บริการเอเจนซี</p>
       <h2 class="h2">ไม่มีเวลายิงแอดเอง?<br>ให้ทีม ADS FAH ดูแลแทน</h2>
       <p class="section__sub">วางกลยุทธ์ ตั้งค่า ปรับแคมเปญ และรายงานผลอย่างโปร่งใส เพื่อให้คุณโฟกัสกับการขายและการบริการลูกค้า</p>
     </div>
@@ -235,7 +243,7 @@
         </details>
         <p class="package__for"><b>เหมาะกับเจ้าของธุรกิจที่ต้องการ</b> เพิ่มยอดขาย · หาลูกค้าใหม่ · สร้างการรับรู้แบรนด์ · เพิ่มยอดผู้ติดตาม · กระตุ้นการทักแชท</p>
         <div class="package__actions">
-          <a href="#booking" class="btn btn--gold btn--lg" data-tab="consult" data-msg="สนใจแพ็กเกจดูแลโฆษณา Facebook &amp; Instagram 30 วัน (10,000 บาท/เดือน)">สนใจแพ็กเกจนี้</a>
+          <a href="#booking" class="btn btn--primary btn--lg" data-tab="consult" data-msg="สนใจแพ็กเกจดูแลโฆษณา Facebook &amp; Instagram 30 วัน (10,000 บาท/เดือน)">สนใจแพ็กเกจนี้</a>
           <a href="https://line.me/ti/p/~adsfahmarketing" target="_blank" rel="noopener" class="btn btn--ghost">สอบถามทาง LINE</a>
         </div>
       </div>
@@ -248,7 +256,7 @@
       <div class="flow__step"><span>4</span><b>Scale และรายงาน</b><p>ขยายงบแคมเปญที่ได้ผล พร้อมรายงานผล</p></div>
     </div>
     <div class="center">
-      <a href="#booking" class="btn btn--gold btn--lg" data-tab="consult">นัดปรึกษาการตลาด</a>
+      <a href="#booking" class="btn btn--primary btn--lg" data-tab="consult">นัดปรึกษาการตลาด</a>
     </div>
   </div>
 </section>
@@ -321,7 +329,7 @@
 <section class="section booking" id="booking">
   <div class="container booking__grid">
     <div class="booking__info reveal">
-      <p class="eyebrow eyebrow--light">สมัครเรียน · จองวันอบรม</p>
+      <p class="eyebrow">สมัครเรียน · จองวันอบรม</p>
       <h2 class="h2">เริ่มต้นเติบโต<br>ไปกับครูฟ้า</h2>
       <p class="lead">กรอกข้อมูลไว้ ทีมงานจะติดต่อกลับเพื่อยืนยันวันเรียนและรายละเอียดการชำระเงิน หรือทัก LINE เพื่อคุยได้ทันที</p>
       <ul class="contact-list">
@@ -373,7 +381,7 @@
 
         <label class="consent"><input type="checkbox" name="consent" required> <span>ยินยอมให้ ADS FAH MARKETING ใช้ข้อมูลนี้เพื่อติดต่อกลับเรื่องคอร์สเรียนและบริการ</span></label>
 
-        <button class="btn btn--gold btn--block btn--lg" type="submit" id="submitBtn">ส่งใบสมัคร</button>
+        <button class="btn btn--primary btn--block btn--lg" type="submit" id="submitBtn">ส่งใบสมัคร</button>
         <p class="form-msg" id="formMsg" role="status"></p>
       </form>
     </div>
@@ -403,7 +411,7 @@
   <div class="container footer__grid">
     <div>
       <a href="#top" class="brand brand--light">
-        <img class="footer__logo" src="images/logo-full-white.png" alt="ADS FAH MARKETING Co.,Ltd — บริษัท แอดส์ฟ้ามาเก็ตติ้ง จำกัด" width="744" height="784" loading="lazy">
+        <img class="footer__logo" src="images/logo-full.png" alt="ADS FAH MARKETING Co.,Ltd — บริษัท แอดส์ฟ้ามาเก็ตติ้ง จำกัด" width="744" height="784" loading="lazy">
       </a>
       <p class="footer__about">คอร์สสอนยิงแอดและดูแลเพจแบบครบวงจร โดยครูฟ้า ผู้เชี่ยวชาญ Meta Ads</p>
     </div>
@@ -441,6 +449,6 @@
   <a class="fab__btn fab__btn--tel" href="tel:0618266465" aria-label="โทรหาเรา"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2"/></svg></a>
 </div>
 
-<script src="app.js?v=10" defer></script>
+<script src="app.js?v=20" defer></script>
 </body>
 </html>

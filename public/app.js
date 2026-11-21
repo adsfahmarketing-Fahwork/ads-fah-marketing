@@ -49,7 +49,7 @@
         </div>
         <ul>${(c.bullets || []).map((b) => `<li>${esc(b)}</li>`).join('')}</ul>
         ${c.dates && c.dates.length ? `<div class="course-card__dates"><b>รอบอบรมที่เปิดรับ</b>${c.dates.map((d) => `<span>${esc(d)}</span>`).join('')}</div>` : ''}
-        <a href="#booking" class="btn ${c.featured ? 'btn--gold' : 'btn--navy'} btn--block" data-course="${esc(c.id)}">${c.price != null ? 'สมัครคอร์สนี้' : 'สอบถาม / จองรอบ'}</a>
+        <a href="#booking" class="btn ${c.featured ? 'btn--primary' : 'btn--dark'} btn--block" data-course="${esc(c.id)}">${c.price != null ? 'สมัครคอร์สนี้' : 'สอบถาม / จองรอบ'}</a>
       </article>`).join('');
     $$('.reveal', grid).forEach(observe);
     fillCourseSelect();
@@ -178,7 +178,7 @@
         <div class="success__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
         <h3>ได้รับข้อมูลแล้ว ขอบคุณค่ะ คุณ${esc(data.name)}</h3>
         <p>ทีมงาน ADS FAH MARKETING จะติดต่อกลับที่เบอร์ ${esc(data.phone)} ภายใน 24 ชั่วโมง<br>ถ้าต้องการคำตอบเร็วขึ้น ทัก LINE ได้เลยค่ะ</p>
-        <a class="btn btn--gold" href="${LINE_URL}" target="_blank" rel="noopener">แชท LINE: adsfahmarketing</a>
+        <a class="btn btn--primary" href="${LINE_URL}" target="_blank" rel="noopener">แชท LINE: adsfahmarketing</a>
       </div>`;
     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
@@ -207,8 +207,8 @@
         <h3>อีกขั้นเดียว คุณ${esc(data.name)}</h3>
         <p>กดปุ่มด้านล่างเพื่อส่งข้อมูลถึงทีมงาน ADS FAH MARKETING</p>
         <div class="manual-send">
-          <a class="btn btn--gold btn--block" href="${mailto}">ส่งทางอีเมล</a>
-          <button type="button" class="btn btn--navy btn--block" id="copyLine">คัดลอกข้อมูล แล้วเปิด LINE</button>
+          <a class="btn btn--primary btn--block" href="${mailto}">ส่งทางอีเมล</a>
+          <button type="button" class="btn btn--dark btn--block" id="copyLine">คัดลอกข้อมูล แล้วเปิด LINE</button>
           <a class="btn btn--ghost btn--block" href="tel:0618266465">โทร 061-826-6465</a>
         </div>
         <pre class="manual-send__text">${esc(lines)}</pre>

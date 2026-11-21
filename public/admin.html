@@ -8,76 +8,82 @@
   <title>หลังบ้าน · ADS FAH MARKETING</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root { --navy: #0B1E45; --navy-9: #07142F; --gold: #C8A15A; --gold-50: #FBF6EA; --gold-200: #EAD7AA; --ivory: #FAF8F3; --ink: #0E1530; --muted: #69728A; --line: #E7E3D9; --ok: #1E7B4D; --err: #C0392B; }
+    /* ADS FAH MARKETING — Admin (same design system as the website) */
+    :root { --cyan: #10B9D1; --cyan-hover: #0EA6BC; --cyan-ink: #077A8B; --cyan-light: #EAF8FB; --cyan-line: #BFE9F1; --white: #FFFFFF; --black: #000000; --gray: #F7FAFC; --ink: #172B3A; --text: #3A4C5A; --muted: #5F7080; --line: #E3EBF0; --ok: #1E7B4D; --err: #C0392B; --font: "Inter", "Prompt", system-ui, -apple-system, sans-serif; }
     * { box-sizing: border-box; }
     [hidden] { display: none !important; }
-    body { margin: 0; font: 15px/1.6 "IBM Plex Sans Thai", system-ui, sans-serif; color: var(--ink); background: var(--ivory); }
-    h1, h2, h3 { margin: 0; font-family: "Noto Serif Thai", serif; }
+    body { margin: 0; font: 400 15px/1.65 var(--font); color: var(--ink); background: var(--gray); -webkit-font-smoothing: antialiased; }
+    h1, h2, h3 { margin: 0; font-family: var(--font); font-weight: 700; color: var(--ink); }
     button, input, select, textarea { font: inherit; color: inherit; }
-    .btn { border: 1px solid transparent; background: var(--navy); color: #fff; padding: 9px 18px; border-radius: 999px; cursor: pointer; font-weight: 600; white-space: nowrap; }
-    .btn:hover { filter: brightness(1.15); }
-    .btn--gold { background: var(--gold); color: var(--navy-9); }
-    .btn--ghost { background: transparent; color: var(--navy); border-color: var(--line); }
-    .btn--danger { background: transparent; color: var(--err); border-color: #EBC4BE; }
+    .btn { border: 1.5px solid transparent; background: var(--black); color: var(--white); padding: 9px 18px; border-radius: 999px; cursor: pointer; font-weight: 600; white-space: nowrap; transition: background .2s, border-color .2s, color .2s, transform .2s; display: inline-flex; align-items: center; justify-content: center; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn--primary { background: var(--cyan); color: var(--ink); }
+    .btn--primary:hover { background: var(--cyan-hover); }
+    .btn--ghost { background: var(--white); color: var(--ink); border-color: var(--line); }
+    .btn--ghost:hover { border-color: var(--cyan); color: var(--cyan-ink); }
+    .btn--danger { background: var(--white); color: var(--err); border-color: #EBC4BE; }
     .btn--sm { padding: 5px 12px; font-size: 13.5px; }
-    input, select, textarea { width: 100%; padding: 9px 12px; border: 1px solid #DCD7CB; border-radius: 10px; background: #fff; }
-    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(200, 161, 90, .2); }
-    label { display: grid; gap: 4px; font-size: 13px; font-weight: 600; color: var(--muted); }
+    input, select, textarea { width: 100%; padding: 9px 12px; border: 1px solid #D4DEE5; border-radius: 10px; background: var(--white); }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(16, 185, 209, .2); }
+    label { display: grid; gap: 4px; font-size: 13px; font-weight: 500; color: var(--muted); }
 
     /* login */
-    .login { min-height: 100vh; display: grid; place-items: center; background: radial-gradient(800px 500px at 80% 0, #1D4190, transparent 60%), var(--navy-9); padding: 16px; }
-    .login__card { width: min(400px, 100%); background: #fff; border-radius: 22px; padding: 36px 30px; display: grid; gap: 16px; }
-    .login__card h1 { font-size: 24px; }
+    .login { min-height: 100vh; display: grid; place-items: center; background: var(--cyan-light); padding: 16px; }
+    .login__card { width: min(400px, 100%); background: var(--white); border: 1px solid var(--line); border-top: 4px solid var(--cyan); border-radius: 22px; padding: 36px 30px; display: grid; gap: 16px; box-shadow: 0 18px 44px -20px rgba(23, 43, 58, .22); }
+    .login__card h1 { font-size: 22px; }
     .login__card p { margin: 0; color: var(--muted); font-size: 14px; }
     .err { color: var(--err); font-size: 14px; min-height: 1.4em; margin: 0; }
 
     /* app */
-    .top { background: var(--navy-9); color: #fff; }
+    .top { background: var(--white); border-bottom: 1px solid var(--line); }
     .top__in { max-width: 1240px; margin: 0 auto; padding: 14px 16px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-    .top h1 { font-size: 18px; flex: 1; }
-    .top h1 small { color: var(--gold-200); font-family: "IBM Plex Sans Thai"; font-weight: 400; font-size: 13px; margin-left: 8px; }
-    .top a { color: var(--gold-200); font-size: 14px; }
+    .top h1 { font-size: 17px; flex: 1; color: var(--black); }
+    .top h1 small { color: var(--muted); font-weight: 500; font-size: 13px; margin-left: 8px; }
+    .top a { color: var(--cyan-ink); font-size: 14px; font-weight: 600; }
     .tabs { max-width: 1240px; margin: 0 auto; padding: 0 16px; display: flex; gap: 4px; overflow-x: auto; }
-    .tabs button { background: none; border: 0; color: rgba(255, 255, 255, .65); padding: 12px 16px; cursor: pointer; border-bottom: 2px solid transparent; font-weight: 600; white-space: nowrap; }
-    .tabs button.on { color: #fff; border-color: var(--gold); }
+    .tabs button { background: none; border: 0; color: var(--muted); padding: 12px 16px; cursor: pointer; border-bottom: 3px solid transparent; font-weight: 600; white-space: nowrap; transition: color .2s, border-color .2s; }
+    .tabs button:hover { color: var(--ink); }
+    .tabs button.on { color: var(--ink); border-color: var(--cyan); }
     main { max-width: 1240px; margin: 0 auto; padding: 24px 16px 80px; }
     .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
-    .stat { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; }
-    .stat b { display: block; font-family: "Noto Serif Thai"; font-size: 28px; line-height: 1.2; }
+    .stat { background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; box-shadow: 0 1px 2px rgba(23, 43, 58, .06); }
+    .stat:first-child { border-top: 3px solid var(--cyan); }
+    .stat b { display: block; font-size: 28px; font-weight: 700; line-height: 1.2; color: var(--black); }
     .stat span { color: var(--muted); font-size: 13.5px; }
     .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
     .toolbar input, .toolbar select { width: auto; flex: 1 1 180px; }
     .toolbar .spacer { flex: 1; }
-    .panel { background: #fff; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+    .panel { background: var(--white); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
     table { width: 100%; border-collapse: collapse; }
     th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
-    th { font-size: 12.5px; color: var(--muted); font-weight: 600; background: var(--ivory); letter-spacing: .03em; }
+    th { font-size: 12.5px; color: var(--muted); font-weight: 600; background: var(--gray); letter-spacing: .03em; }
     tr:last-child td { border-bottom: 0; }
     td small { color: var(--muted); display: block; }
-    .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: var(--gold-50); color: #8A6A2D; border: 1px solid var(--gold-200); }
-    .pill--consult { background: #EEF3FC; color: #1D4190; border-color: #C9D7F2; }
-    .status { width: 140px; padding: 6px 10px; border-radius: 999px; font-weight: 600; font-size: 13px; }
-    .status[data-v="new"] { background: #FFF5E0; border-color: #F0D49A; }
-    .status[data-v="contacted"] { background: #EEF3FC; border-color: #C9D7F2; }
-    .status[data-v="confirmed"] { background: #EAF6F0; border-color: #B9E0CB; }
+    td a { color: var(--cyan-ink); }
+    .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: var(--cyan-light); color: var(--cyan-ink); border: 1px solid var(--cyan-line); }
+    .pill--consult { background: var(--black); color: var(--white); border-color: var(--black); }
+    .status { width: 150px; padding: 6px 10px; border-radius: 999px; font-weight: 600; font-size: 13px; }
+    .status[data-v="new"] { background: var(--cyan-light); border-color: var(--cyan); color: var(--cyan-ink); }
+    .status[data-v="contacted"] { background: var(--white); border-color: var(--cyan-line); }
+    .status[data-v="confirmed"] { background: #EAF6F0; border-color: #B9E0CB; color: var(--ok); }
     .status[data-v="paid"] { background: #DFF2E7; border-color: #94CFAE; color: var(--ok); }
-    .status[data-v="cancelled"] { background: #F5F5F5; color: var(--muted); }
+    .status[data-v="cancelled"] { background: var(--gray); color: var(--muted); }
     .note { min-height: 38px; font-size: 13.5px; resize: vertical; }
     .empty { padding: 48px; text-align: center; color: var(--muted); }
     .msg { margin-top: 8px; display: block; }
 
     .cards { display: grid; gap: 16px; }
-    .card { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: grid; gap: 12px; }
+    .card { background: var(--white); border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: grid; gap: 12px; box-shadow: 0 1px 2px rgba(23, 43, 58, .06); }
     .card__head { display: flex; align-items: center; gap: 10px; justify-content: space-between; }
-    .card__head h3 { font-size: 17px; }
+    .card__head h3 { font-size: 16.5px; }
     .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
     .check { display: flex; align-items: center; gap: 8px; font-weight: 500; color: var(--ink); }
-    .check input { width: 18px; height: 18px; }
-    .savebar { position: sticky; bottom: 0; background: rgba(250, 248, 243, .95); backdrop-filter: blur(8px); padding: 14px 0; margin-top: 16px; display: flex; gap: 10px; align-items: center; border-top: 1px solid var(--line); }
-    .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(120px); background: var(--navy-9); color: #fff; padding: 12px 22px; border-radius: 999px; transition: transform .3s; z-index: 10; }
+    .check input { width: 18px; height: 18px; accent-color: var(--cyan); }
+    .savebar { position: sticky; bottom: 0; background: rgba(247, 250, 252, .96); padding: 14px 0; margin-top: 16px; display: flex; gap: 10px; align-items: center; border-top: 1px solid var(--line); }
+    .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(120px); background: var(--black); color: var(--white); padding: 12px 22px; border-radius: 999px; transition: transform .3s; z-index: 10; }
     .toast.show { transform: translateX(-50%) translateY(0); }
     .hint { color: var(--muted); font-size: 13.5px; margin: 0 0 14px; }
 
@@ -99,7 +105,7 @@
     <h1 style="text-align:center">หลังบ้าน</h1>
     <p>เข้าสู่ระบบเพื่อจัดการผู้สมัคร คอร์ส และรีวิว</p>
     <label>รหัสผ่าน<input type="password" name="password" autocomplete="current-password" required autofocus></label>
-    <button class="btn btn--gold" type="submit">เข้าสู่ระบบ</button>
+    <button class="btn btn--primary" type="submit">เข้าสู่ระบบ</button>
     <p class="err" id="loginErr"></p>
   </form>
 </section>
@@ -107,10 +113,10 @@
 <div id="appView" hidden>
   <header class="top">
     <div class="top__in">
-      <img src="/images/logo-mark-white.png" alt="" style="height:30px">
+      <img src="/images/logo-mark.png" alt="" style="height:30px">
       <h1>ADS FAH MARKETING <small>ระบบหลังบ้าน</small></h1>
       <a href="/" target="_blank">ดูหน้าเว็บ ↗</a>
-      <button class="btn btn--ghost btn--sm" id="logoutBtn" style="color:#fff;border-color:rgba(255,255,255,.3)">ออกจากระบบ</button>
+      <button class="btn btn--ghost btn--sm" id="logoutBtn">ออกจากระบบ</button>
     </div>
     <nav class="tabs">
       <button data-view="leads" class="on">ผู้สมัคร / ลูกค้า</button>
@@ -145,7 +151,7 @@
       <div class="savebar">
         <button class="btn btn--ghost" id="addCourse">+ เพิ่มคอร์ส</button>
         <span style="flex:1"></span>
-        <button class="btn btn--gold" id="saveCourses">บันทึกคอร์สทั้งหมด</button>
+        <button class="btn btn--primary" id="saveCourses">บันทึกคอร์สทั้งหมด</button>
       </div>
     </section>
 
@@ -156,7 +162,7 @@
       <div class="savebar">
         <button class="btn btn--ghost" id="addReview">+ เพิ่มรีวิว</button>
         <span style="flex:1"></span>
-        <button class="btn btn--gold" id="saveReviews">บันทึกรีวิวทั้งหมด</button>
+        <button class="btn btn--primary" id="saveReviews">บันทึกรีวิวทั้งหมด</button>
       </div>
     </section>
   </main>
