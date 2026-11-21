@@ -58,7 +58,7 @@ jobs:
           VITE_SUPABASE_ANON_KEY: sb_publishable_ZFz6lFn_0CzP4wDUIjfmiQ_vsf_Evq8
           VITE_HASH_ROUTER: '1'   # GitHub Pages ใน sub-path ไม่มี SPA fallback จึงใช้ลิงก์แบบ #/
         run: |
-          npx vite build --base /ads-fah-marketing/crm/ --outDir dist-live
+          npx vite build --base /crm/ --outDir dist-live
           rm -rf ../public/crm
           cp -R dist-live ../public/crm
 
